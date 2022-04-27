@@ -208,6 +208,17 @@ class Cake(models.Model):
         null=True
     )
 
+    def add_price(self):
+        self.price = 0
+        attributes = [self.shape, self.height, self.topping, self.berry, self.decoration]
+        # FIXME 'hardcode'
+        for attribute in attributes:
+            try:
+                self.price += attribute.price
+            except AttributeError:
+                pass
+        return self
+
     def __str__(self):
         return f'Торт {self.name}'
 
