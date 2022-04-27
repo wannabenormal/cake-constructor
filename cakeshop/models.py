@@ -7,6 +7,7 @@ class Height(models.Model):
         max_length=25,
         help_text='Высота торта в этажах (1, 2, 3 и т.д)',
     )
+
     price = models.PositiveIntegerField(
         'Цена'
     )
@@ -24,6 +25,11 @@ class Shape(models.Model):
         'Форма',
         max_length=25,
         help_text='Форма торта (круг, шар, четырехмерный куб, бутылка Клейна и т.д)',
+    )
+    shape_codename = models.CharField(
+        'Кодовое имя формы',
+         max_length=25,
+         null = True
     )
     price = models.PositiveIntegerField(
         'Цена'
@@ -43,6 +49,11 @@ class Topping(models.Model):
         max_length=25,
         help_text='Шоколадный, ванильный, медовый и т.д',
     )
+    topping_codename = models.CharField(
+        'Кодовое имя топпинга',
+        max_length=25,
+        null=True
+    )
     price = models.PositiveIntegerField(
         'Цена'
     )
@@ -61,6 +72,11 @@ class Berry(models.Model):
         max_length=25,
         help_text='Клубника, голубика, ежевика, малина..',
     )
+    berry_codename = models.CharField(
+        'Кодовое имя топпинга',
+         max_length=25,
+         null=True
+    )
     price = models.PositiveIntegerField(
         'Цена'
     )
@@ -78,6 +94,11 @@ class Decoration(models.Model):
         'Украшение',
         max_length=10,
         help_text='Марципан, пекан, фундук, шоколадная крошка ..',
+    )
+    decoration_codename = models.CharField(
+        'Кодовое имя топпинга',
+         max_length=25,
+         null=True
     )
     price = models.PositiveIntegerField(
         'Цена'
