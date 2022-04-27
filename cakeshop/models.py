@@ -138,7 +138,8 @@ class Customer(models.Model):
         verbose_name='Реклама, по которой перешел пользователь',
         on_delete=models.CASCADE,
         max_length=100,
-        blank=True
+        blank=True,
+        null=True
     )
     address = models.CharField(
         'Адрес заказчика',
@@ -188,20 +189,23 @@ class Cake(models.Model):
         verbose_name='Ягоды',
         on_delete=models.CASCADE,
         related_name='cake_berry',
-        blank=True
+        blank=True,
+        null=True
     )
     decoration = models.ForeignKey(
         Decoration,
         verbose_name='Украшение',
         on_delete=models.CASCADE,
         related_name='cake_decoration',
-        blank=True
+        blank=True,
+        null=True
     )
     inscription = models.CharField(
         'Надпись',
         max_length=50,
         help_text='Надпись на торте',
-        blank=True
+        blank=True,
+        null=True
     )
 
     def __str__(self):
@@ -232,7 +236,7 @@ class Order(models.Model):
         related_name='cake',
     )
     status = models.CharField(
-        'Тип',
+        'Статус',
         choices=STATUSES,
         max_length=255,
         db_index=True
