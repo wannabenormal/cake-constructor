@@ -4,17 +4,23 @@ from cakeshop.models import Order, Customer, Cake, Decoration, Topping, Shape, A
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    pass
+    raw_id_fields = 'customer', 'cake'
+    list_filter = 'status', 'delivery_address', 'delivery_datetime'
+    list_display = 'customer', 'cake', 'delivery_address', 'delivery_datetime', 'status'
 
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    pass
+    raw_id_fields = 'referral',
+    list_display = 'name', 'email', 'phonenumber', 'referral'
+    list_filter = 'referral',
 
 
 @admin.register(Cake)
 class CakeAdmin(admin.ModelAdmin):
-    pass
+    raw_id_fields = 'height', 'shape', 'topping', 'berry', 'decoration'
+    list_display = 'name', 'height', 'shape',
+    # TODO count cake's price and show it
 
 
 @admin.register(Advertisement)
