@@ -2,10 +2,10 @@ from django.db import models
 
 
 class Height(models.Model):
-    height = models.IntegerField(
+    height = models.CharField(
         'Высота',
+        max_length=25,
         help_text='Высота торта в этажах (1, 2, 3 и т.д)',
-        choices=[(1, '1'),(2, '2'),(3, '3')]
     )
     price = models.PositiveIntegerField(
         'Цена'
@@ -22,11 +22,8 @@ class Height(models.Model):
 class Shape(models.Model):
     shape = models.CharField(
         'Форма',
-        max_length=15,
+        max_length=25,
         help_text='Форма торта (круг, шар, четырехмерный куб, бутылка Клейна и т.д)',
-        choices=[('C', 'Круг'),
-                 ('S', 'Квадрат'),
-                 ('R', 'Прямоугольник')]
     )
     price = models.PositiveIntegerField(
         'Цена'
@@ -43,13 +40,7 @@ class Shape(models.Model):
 class Topping(models.Model):
     topping = models.CharField(
         'Топпинг',
-        max_length=15,
-        choices=[('without', 'Без топинга'),
-                 ('white_sauce', 'Белый Соус'),
-                 ('caramel', 'Карамель'),
-                 ('maple', 'Кленовый'),
-                 ('blueberry', 'Черничный'),
-                 ('m_choco', 'Молочный шоколад')],
+        max_length=25,
         help_text='Шоколадный, ванильный, медовый и т.д',
     )
     price = models.PositiveIntegerField(
@@ -67,11 +58,7 @@ class Topping(models.Model):
 class Berry(models.Model):
     berry = models.CharField(
         'Ягода',
-        max_length=15,
-        choices=[('bramble', 'Ежевика'),
-                 ('raspberry', 'Малина'),
-                 ('blueberry', 'Голубика'),
-                 ('strawberry', 'Клубника')],
+        max_length=25,
         help_text='Клубника, голубика, ежевика, малина..',
     )
     price = models.PositiveIntegerField(
@@ -91,12 +78,6 @@ class Decoration(models.Model):
         'Украшение',
         max_length=10,
         help_text='Марципан, пекан, фундук, шоколадная крошка ..',
-        choices=[('marz', 'Марципан'),
-                 ('pecan', 'Пекан'),
-                 ('hazel', 'Фундук'),
-                 ('bese', 'Безе'),
-                 ('pist', 'Фисташки'),
-                 ('marsh', 'Маршмеллоу')],
     )
     price = models.PositiveIntegerField(
         'Цена'
@@ -247,7 +228,6 @@ class Cake(models.Model):
 
 
 class Order(models.Model):
-
     STATUSES = (
         ('В обработке', 'В обработке'),
         ('Готовится', 'Готовится'),
@@ -304,6 +284,3 @@ class Order(models.Model):
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
-
-
-
