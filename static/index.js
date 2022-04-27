@@ -144,7 +144,30 @@ Vue.createApp({
                 Dates: this.Dates,
                 Time: this.Time,
                 DelivComments: this.DelivComments,
-            }, null ,2))
+            }, null, 2))
+
+
+            var json_resp = new XMLHttpRequest();
+            json_resp.open('POST', 'register_order/');
+            json_resp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            json_resp.send(JSON.stringify({
+                Cost: this.Cost,
+                Levels: this.DATA.Levels[this.Levels],
+                Form: this.DATA.Forms[this.Form],
+                Topping: this.DATA.Toppings[this.Topping],
+                Berries: this.DATA.Berries[this.Berries],
+                Decor: this.DATA.Decors[this.Decor],
+                Words: this.Words,
+                Comments: this.Comments,
+                Name: this.Name,
+                Phone: this.Phone,
+                Email: this.Email,
+                Address: this.Address,
+                Dates: this.Dates,
+                Time: this.Time,
+                DelivComments: this.DelivComments,
+            }, null, 2));
+
         }
     },
     computed: {
