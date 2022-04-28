@@ -8,7 +8,7 @@ def create_objs(apps, schema_editor):
     Topping = apps.get_model('cakeshop', 'Topping')
     Shape = apps.get_model('cakeshop', 'Shape')
     Decoration = apps.get_model('cakeshop', 'Decoration')
-
+    Height = apps.get_model('cakeshop', 'Height')
 
     Berry.objects.bulk_create([
         Berry(berry="Ежевика", berry_codename="bramble", price=400),
@@ -39,6 +39,11 @@ def create_objs(apps, schema_editor):
         Shape(shape="Круг", shape_codename="c", price=600),
         Shape(shape="Квадрат", shape_codename="s", price=400),
         Shape(shape="Прямоугольник", shape_codename="r", price=1000),
+    ])
+    Height.objects.bulk_create([
+        Height(height="1", price=400),
+        Height(height="2", price=750),
+        Height(height="3", price=1100),
     ])
 
 class Migration(migrations.Migration):
