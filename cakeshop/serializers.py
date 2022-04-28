@@ -19,7 +19,7 @@ class CustomerSerializer(ModelSerializer):
 
     class Meta:
         model = Customer
-        fields = ['cake', 'email', 'phonenumber', 'address']
+        fields = ['name', 'email', 'phonenumber', 'address']
 
     def create(self, validated_data):
         return Customer.objects.create(**validated_data)
@@ -50,3 +50,5 @@ class OrderSerializer(ModelSerializer):
 
     def update(self, instance, validated_data):
         return Order.objects.update(**validated_data)
+
+# TODO add serializers for every model related to cake
