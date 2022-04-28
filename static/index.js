@@ -154,7 +154,7 @@ Vue.createApp({
             json_resp.open('POST', 'register_order/');
             json_resp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             json_resp.send(JSON.stringify({
-                delivery_datetime: this.Dates + this.Time,
+                delivery_datetime: '2022-04-28 01:08:49.016151',  //this.Time, this.Dates  YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z
                 delivery_address: this.Address,
                 price: this.Cost,
                 customer: {
@@ -164,11 +164,11 @@ Vue.createApp({
                     address: this.Address,
                 },
                 cake: {
-                    height: this.DATA.Levels[this.Levels],
-                    shape: this.DATA.Forms[this.Form],
-                    topping: this.DATA.Toppings[this.Topping],
-                    berry: this.DATA.Berries[this.Berries],
-                    decoration: this.DATA.Decors[this.Decor],
+                    height: 1,// this.DATA.Levels[this.Levels],
+                    shape: 1, //this.DATA.Forms[this.Form],
+                    topping: 1, //this.DATA.Toppings[this.Topping],
+                    berry: 1, //this.DATA.Berries[this.Berries],
+                    decoration: 1, //this.DATA.Decors[this.Decor],
                     inscription: this.Words,
                 },
                 comments: this.Comments,
@@ -187,22 +187,3 @@ Vue.createApp({
         }
     }
 }).mount('#VueApp')
-//{"status": "В обработке",
-//                    "price": 500,
-//                    "delivery_datetime": "2022-04-28 01:08:49.016151",
-//                    "delivery_address": "Москва",
-//                    "customer": {
-//                        "name": "first",
-//                        "email": "validated@mail.ru",
-//                        "phonenumber": "89878888881",
-//                        "address": "Москва"
-//                    },
-//                    "cake": {"name": "Cake",
-//                             "description": "simple cake",
-//                             "height": "1",
-//                             "shape": "1",
-//                             "topping": "1",
-//                             "berry": "1",
-//                             "decoration": "1",
-//                             "inscription": ""}
-//                    }

@@ -52,8 +52,6 @@ def register_order(request):
         customer.address = order_serializer.validated_data['customer']['address']
         customer.save()
     cake = Cake.objects.create(
-        name=order_serializer.validated_data['cake']['name'],
-        description=order_serializer.validated_data['cake']['description'],
         height=order_serializer.validated_data['cake']['height'],
         shape=order_serializer.validated_data['cake']['shape'],
         topping=order_serializer.validated_data['cake']['topping'],
@@ -65,7 +63,6 @@ def register_order(request):
         cake=cake,
         customer=customer,
         price=order_serializer.validated_data['price'],
-        status=order_serializer.validated_data['status'],
         delivery_datetime=order_serializer.validated_data['delivery_datetime'],
         delivery_address=order_serializer.validated_data['delivery_address'],
     )
