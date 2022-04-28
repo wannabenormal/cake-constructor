@@ -7,6 +7,12 @@ class Height(models.Model):
         max_length=25,
         help_text='Высота торта в этажах (1, 2, 3 и т.д)',
     )
+    height_codename = models.CharField(
+        'Кодовое имя этажности',
+        primary_key=True,
+        max_length=25,
+        null=False,
+    )
 
     price = models.PositiveIntegerField(
         'Цена'
@@ -28,8 +34,9 @@ class Shape(models.Model):
     )
     shape_codename = models.CharField(
         'Кодовое имя формы',
+        primary_key=True,
         max_length=25,
-        null=True
+        null=False,
     )
     price = models.PositiveIntegerField(
         'Цена'
@@ -51,8 +58,9 @@ class Topping(models.Model):
     )
     topping_codename = models.CharField(
         'Кодовое имя топпинга',
+        primary_key=True,
         max_length=25,
-        null=True
+        null=False,
     )
     price = models.PositiveIntegerField(
         'Цена'
@@ -74,8 +82,9 @@ class Berry(models.Model):
     )
     berry_codename = models.CharField(
         'Кодовое имя ягоды',
+        primary_key=True,
         max_length=25,
-        null=True
+        null=False,
     )
     price = models.PositiveIntegerField(
         'Цена'
@@ -97,8 +106,9 @@ class Decoration(models.Model):
     )
     decoration_codename = models.CharField(
         'Кодовое имя украшения',
+        primary_key=True,
         max_length=25,
-        null=True
+        null=False,
     )
     price = models.PositiveIntegerField(
         'Цена'
