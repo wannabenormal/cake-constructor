@@ -28,8 +28,8 @@ class Shape(models.Model):
     )
     shape_codename = models.CharField(
         'Кодовое имя формы',
-         max_length=25,
-         null = True
+        max_length=25,
+        null=True
     )
     price = models.PositiveIntegerField(
         'Цена'
@@ -73,9 +73,9 @@ class Berry(models.Model):
         help_text='Клубника, голубика, ежевика, малина..',
     )
     berry_codename = models.CharField(
-        'Кодовое имя топпинга',
-         max_length=25,
-         null=True
+        'Кодовое имя ягоды',
+        max_length=25,
+        null=True
     )
     price = models.PositiveIntegerField(
         'Цена'
@@ -96,9 +96,9 @@ class Decoration(models.Model):
         help_text='Марципан, пекан, фундук, шоколадная крошка ..',
     )
     decoration_codename = models.CharField(
-        'Кодовое имя топпинга',
-         max_length=25,
-         null=True
+        'Кодовое имя украшения',
+        max_length=25,
+        null=True
     )
     price = models.PositiveIntegerField(
         'Цена'
@@ -180,6 +180,7 @@ class Cake(models.Model):
         'Название торта',
         max_length=200,
         help_text='Название',
+        default='Без названия'
     )
     description = models.CharField(
         'Описание',
@@ -270,9 +271,10 @@ class Order(models.Model):
         'Статус',
         choices=STATUSES,
         max_length=255,
-        db_index=True
+        db_index=True,
+        default='В обработке'
     )
-    price = models.IntegerField(
+    price = models.PositiveIntegerField(
         'Общая стоимость'
     )
     creation_time = models.DateTimeField(
