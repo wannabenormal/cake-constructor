@@ -74,3 +74,12 @@ def register_order(request):
 
     context = {}
     return render(request, 'index.html', context)
+
+
+#  login required
+def personal(request, user_id):
+    customer = Customer.objects.get(id=user_id)
+    context = {}
+    return render(request, 'lk.html', context)
+
+
