@@ -9,6 +9,8 @@ from .serializers import OrderSerializer
 
 
 def main_page(request):
+    # TODO do list with cakes for main page?
+    # TODO do dict with all cakes's parameters to display on main page
     context = {}
     return render(request, 'index.html', context)
 
@@ -78,7 +80,34 @@ def register_order(request):
 
 #  login required
 def personal(request, user_id):
-    customer = Customer.objects.get(id=user_id)
+    customer = Customer.objects.get(id=user_id)  # TODO add 'with_orders' method
+    name = customer.name
+    email = customer.email
+    phonenumber = customer.phonenumber
+    orders = (Order.objects
+              .prefetch_related('cake')
+              .select_related('cake__shape')
+              .select_related('cake__height')
+              .select_related('cake__topping')
+              .select_related('cake__berry')
+              .select_related('cake__decoration')
+              .filter(customer=customer))  # TODO add 'with_params' method
+    order_details = []
+    for order in orders:
+        order_details.append({
+            'id': order.id,
+            'cake_name': order.cake.name,
+            'status': order.status,
+            'delivery_datetime': order.delivery_datetime,
+            'height': order.cake.height,
+            'shape': order.cake.shape,
+            'topping': order.cake.topping,
+            'berry': order.cake.berry,
+            'decoration': order.cake.decoration,
+            'inscription': order.cake.inscription,
+        })
+
+    print(order_details)
     context = {}
     return render(request, 'lk.html', context)
 
