@@ -180,13 +180,15 @@ class Cake(models.Model):
         'Название торта',
         max_length=200,
         help_text='Название',
-        default='Без названия'
+        default='Без названия',
+        null=True
     )
     description = models.CharField(
         'Описание',
         max_length=200,
         help_text='Описание',
-        blank=True
+        blank=True,
+        null=True
     )
     height = models.ForeignKey(
         Height,
@@ -293,7 +295,8 @@ class Order(models.Model):
     comment = models.CharField(
         'Комментарии',
         max_length=300,
-        blank=True
+        blank=True,
+        null=True
     )
     is_urgent = models.BooleanField(
         'Срочный?',
