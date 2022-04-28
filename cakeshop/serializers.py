@@ -1,8 +1,13 @@
-from rest_framework.serializers import ModelSerializer
-from cakeshop.models import Order, Customer, Cake
+from rest_framework.serializers import ModelSerializer, RelatedField, ReadOnlyField, PrimaryKeyRelatedField
+from cakeshop.models import Order, Customer, Cake, Shape, Topping, Decoration, Height, Berry
 
 
 class CakeSerializer(ModelSerializer):
+    height = PrimaryKeyRelatedField(read_only=False, queryset=Height.objects.all())
+    shape = PrimaryKeyRelatedField(read_only=False, queryset=Shape.objects.all())
+    topping = PrimaryKeyRelatedField(read_only=False, queryset=Topping.objects.all())
+    decoration = PrimaryKeyRelatedField(read_only=False, queryset=Decoration.objects.all())
+    berry = PrimaryKeyRelatedField(read_only=False, queryset=Berry.objects.all())
 
     class Meta:
         model = Cake
@@ -50,5 +55,3 @@ class OrderSerializer(ModelSerializer):
 
     def update(self, instance, validated_data):
         return Order.objects.update(**validated_data)
-
-# TODO add serializers for every model related to cake
