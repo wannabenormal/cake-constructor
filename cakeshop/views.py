@@ -33,7 +33,7 @@ drf_test_string = {"status": "В обработке",
                             "inscription": ""}
                    }
 
-@csrf_exempt
+#@csrf_exempt
 @api_view(['POST'])
 def register_order(request):
     order_serializer = OrderSerializer(data=request.data)
