@@ -1,9 +1,14 @@
 from pathlib import Path
 import os
-
+from environs import Env
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
+
+env = Env()
+env.read_env()
+STRIPE_PUBLIC_KEY = env.str('STRIPE_PUBLIC_KEY')
+STRIPE_SECRET_KEY = env.str('STRIPE_SECRET_KEY')
 
 SECRET_KEY = 'django-insecure-+_&^71pgrwa%o6b$r5d15^7ypt&460-nzdr^0=yl!upxn=abdc'
 

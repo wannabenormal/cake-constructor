@@ -1,9 +1,15 @@
-from django.shortcuts import render
+import json
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from .models import Order, Cake, Customer
 from rest_framework.response import Response
 from .serializers import OrderSerializer
+from django.views import View
+from django.conf import settings
+from django.views.generic import TemplateView
+import stripe
 
 
 def main_page(request):
@@ -112,4 +118,51 @@ def personal(request):
     }
     return render(request, 'lk.html', context)
 
+
+class SuccessView(TemplateView):
+    template_name = 'success.html'
+
+
+class CancelView(TemplateView):
+    template_name = 'cancel.html'
+
+
+class ProductLandingPageView(TemplateView):
+    template_name = 'landing.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductLandingPageView, self).get_context_data()
+        context.update({
+            "STRIPE_PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY
+        })
+        return context
+
+
+class CreateCheckOutSessionView(View):
+
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+
+    @csrf_exempt
+    def post(self, request, *args, **kwargs):
+        YOUR_DOMAIN = 'http://127.0.0.1:8000'
+
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[
+                {
+                    'price_data': {
+                        'currency': 'usd',
+                        'unit_amount': 2000,
+                        'product_data': {
+                            'name': 'test_payment_product'
+                        }
+                    },
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            success_url=YOUR_DOMAIN + '/success',
+            cancel_url=YOUR_DOMAIN + '/cancel',
+        )
+        return redirect(checkout_session.url, code=303)
 
