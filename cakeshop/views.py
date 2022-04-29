@@ -1,9 +1,7 @@
 from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
-import json
+from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from .models import Order, Cake, Customer
-from django.db.models import Q
 from rest_framework.response import Response
 from .serializers import OrderSerializer
 
@@ -27,15 +25,15 @@ drf_test_string = {"status": "В обработке",
                    },
                    "cake": {"name": "Cake",
                             "description": "simple cake",
-                            "height": "1",
-                            "shape": "1",
+                            "height": "one",
+                            "shape": "s",
                             "topping": "1",
                             "berry": "1",
                             "decoration": "1",
                             "inscription": ""}
                    }
 
-#@csrf_exempt
+
 @api_view(['POST'])
 def register_order(request):
     order_serializer = OrderSerializer(data=request.data)
@@ -47,7 +45,6 @@ def register_order(request):
                   'name': order_serializer.validated_data['customer']['name'],
                   'address': order_serializer.validated_data['customer']['address']}
     )
-
     if not created:  # Обновляем информацию о клиенте
         customer.email = order_serializer.validated_data['customer']['email']
         customer.name = order_serializer.validated_data['customer']['name']
@@ -71,19 +68,21 @@ def register_order(request):
 
     return Response({"status": 200})
 
-    
-   # Cake.objects.
-
-    context = {}
-    return render(request, 'index.html', context)
+   # context = {}
+  #  return render(request, 'index.html', context)
 
 
 #  login required
-def personal(request, user_id):
-    customer = Customer.objects.get(id=user_id)  # TODO add 'with_orders' method
-    name = customer.name
-    email = customer.email
-    phonenumber = customer.phonenumber
+def personal(request):
+    current_user = request.user
+    customer = Customer.objects.get(name=current_user)  # TODO add 'with_orders' method
+
+    customer_details = {
+        'name': customer.name,
+        'email': customer.email,
+        'phonenumber': customer.phonenumber
+    }
+
     orders = (Order.objects
               .prefetch_related('cake')
               .select_related('cake__shape')
@@ -92,9 +91,9 @@ def personal(request, user_id):
               .select_related('cake__berry')
               .select_related('cake__decoration')
               .filter(customer=customer))  # TODO add 'with_params' method
-    order_details = []
+    orders_details = []
     for order in orders:
-        order_details.append({
+        orders_details.append({
             'id': order.id,
             'cake_name': order.cake.name,
             'status': order.status,
@@ -107,8 +106,10 @@ def personal(request, user_id):
             'inscription': order.cake.inscription,
         })
 
-    print(order_details)
-    context = {}
+    context = {
+        'orders': orders_details,
+        'customer': customer_details
+    }
     return render(request, 'lk.html', context)
 
 

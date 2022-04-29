@@ -9,5 +9,5 @@ app_name = "cakeshop"
 urlpatterns = [
     path('', main_page),
     path('register_order/', register_order),
-    path('personal/<int:user_id>', personal)
+    path('personal/', personal)
 ]
