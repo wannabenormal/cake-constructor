@@ -1,4 +1,5 @@
 import json
+from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -8,7 +9,7 @@ from rest_framework.response import Response
 from .serializers import OrderSerializer
 from django.views import View
 from django.conf import settings
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, RedirectView
 import stripe
 
 
@@ -43,7 +44,7 @@ drf_test_string = {"status": "В обработке",
 @api_view(['POST'])
 def register_order(request):
     order_serializer = OrderSerializer(data=request.data)
-    order_serializer.is_valid(raise_exception=True)
+    order_serializer.is_valid(raise_exception=False)
 
     customer, created = Customer.objects.get_or_create(
         phonenumber=order_serializer.validated_data['customer']['phonenumber'],
@@ -64,7 +65,7 @@ def register_order(request):
         decoration=order_serializer.validated_data['cake'].get('decoration'),
         inscription=order_serializer.validated_data['cake'].get('inscription'),
     )
-    Order.objects.create(
+    order = Order.objects.create(
         cake=cake,
         customer=customer,
         price=order_serializer.validated_data['price'],
@@ -72,7 +73,7 @@ def register_order(request):
         delivery_address=order_serializer.validated_data['delivery_address'],
     )
 
-    return Response({"status": 200})
+    return redirect(reverse('cakeshop:create-checkout-session', kwargs={'order_id': order.id}))
 
    # context = {}
   #  return render(request, 'index.html', context)
@@ -127,42 +128,31 @@ class CancelView(TemplateView):
     template_name = 'cancel.html'
 
 
-class ProductLandingPageView(TemplateView):
-    template_name = 'landing.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(ProductLandingPageView, self).get_context_data()
-        context.update({
-            "STRIPE_PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY
-        })
-        return context
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
-class CreateCheckOutSessionView(View):
+def session(request, order_id):
+    order = Order.objects.get(id=order_id)
+    YOUR_DOMAIN = 'http://127.0.0.1:8000'
 
-    stripe.api_key = settings.STRIPE_SECRET_KEY
-
-    @csrf_exempt
-    def post(self, request, *args, **kwargs):
-        YOUR_DOMAIN = 'http://127.0.0.1:8000'
-
-        checkout_session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
-            line_items=[
-                {
-                    'price_data': {
-                        'currency': 'usd',
-                        'unit_amount': 2000,
-                        'product_data': {
-                            'name': 'test_payment_product'
-                        }
-                    },
-                    'quantity': 1,
+    checkout_session = stripe.checkout.Session.create(
+        payment_method_types=['card'],
+        line_items=[
+            {
+                'price_data': {
+                    'currency': 'usd',
+                    'unit_amount': 2000,
+                    'product_data': {
+                        'name': 'test_payment_product'
+                    }
                 },
-            ],
-            mode='payment',
-            success_url=YOUR_DOMAIN + '/success',
-            cancel_url=YOUR_DOMAIN + '/cancel',
-        )
-        return redirect(checkout_session.url, code=303)
+                'quantity': 1,
+            },
+        ],
+        mode='payment',
+        success_url=YOUR_DOMAIN + '/success',
+        cancel_url=YOUR_DOMAIN + '/cancel',
+    )
+    return redirect(checkout_session.url, code=303)
+    #return redirect('https://google.com', code=303)
 

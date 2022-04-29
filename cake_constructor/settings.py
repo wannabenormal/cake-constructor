@@ -14,9 +14,10 @@ SECRET_KEY = 'django-insecure-+_&^71pgrwa%o6b$r5d15^7ypt&460-nzdr^0=yl!upxn=abdc
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
+    "corsheaders",
     'debug_toolbar',
     'cakeshop.apps.CakeshopConfig',
     'django.contrib.admin',
@@ -32,6 +33,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -94,6 +96,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_METHODS = ['*']
+CORS_ALLOW_HEADERS = ['*']
+CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000"]
 LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'UTC'
