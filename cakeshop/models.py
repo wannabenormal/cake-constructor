@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 
 class Height(models.Model):
     height = models.CharField(
@@ -149,6 +149,13 @@ class Advertisement(models.Model):
 
 
 class Customer(models.Model):
+    user = models.ForeignKey(User,
+                             verbose_name='Модель Юзера',
+                             blank=True,
+                             null=True,
+                             on_delete=models.CASCADE,
+                             related_name='customer')
+
     name = models.CharField(
         'Имя',
         max_length=150,

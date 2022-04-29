@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
+    'accounts.apps.AccountsConfig',
     # TODO add phonenumberfield
 ]
 
@@ -109,3 +110,5 @@ MEDIA_URL = '/media/'
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
+
+LOGIN_REDIRECT_URL = '/'
