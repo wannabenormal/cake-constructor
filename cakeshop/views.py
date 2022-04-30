@@ -1,22 +1,42 @@
-import json
 from django.urls import reverse
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
-from .models import Order, Cake, Customer
-from rest_framework.response import Response
+from .models import Order, Cake, Customer, Height, Shape, Topping, Berry, Decoration
 from .serializers import OrderSerializer
-from django.views import View
 from django.conf import settings
-from django.views.generic import TemplateView, RedirectView
+from django.views.generic import TemplateView
 import stripe
+from django.shortcuts import get_object_or_404
 
 
 def main_page(request):
-    # TODO do list with cakes for main page?
-    # TODO do dict with all cakes's parameters to display on main page
-    context = {}
+    heights = Height.objects.all()
+    shapes = Shape.objects.all()
+    toppings = Topping.objects.all()
+    berries = Berry.objects.all()
+    decorations = Decoration.objects.all()
+
+    context = {"heights":
+                   {"heights_codenames": [height.height_codename for height in heights],
+                    "heights_names": [height.height for height in heights],
+                    "heights_prices": [height.price for height in heights]},
+               "shapes":
+                   {"shapes_codenames": [shape.shape_codename for shape in shapes],
+                    "shapes_names": [shape.shape for shape in shapes],
+                    "shapes_prices": [shape.price for shape in shapes]},
+               "toppings":
+                   {"toppings_codenames": [topping.topping_codename for topping in toppings],
+                    "toppings_names": [topping.topping for topping in toppings],
+                    "toppings_prices": [topping.price for topping in toppings]},
+               "berries":
+                   {"berries_codenames": [berry.berry_codename for berry in berries],
+                    "berries_names": [berry.berry for berry in berries],
+                    "berries_prices": [berry.price for berry in berries]},
+               "decorations":
+                   {"decorations_codenames": [decoration.decoration_codename for decoration in decorations],
+                    "decorations_names": [decoration.decoration for decoration in decorations],
+                    "decorations_prices": [decoration.price for decoration in decorations]},
+               }
     return render(request, 'index.html', context)
 
 
@@ -45,7 +65,6 @@ drf_test_string = {"status": "В обработке",
 def register_order(request):
     order_serializer = OrderSerializer(data=request.data)
     order_serializer.is_valid(raise_exception=False)
-
     customer, created = Customer.objects.get_or_create(
         phonenumber=order_serializer.validated_data['customer']['phonenumber'],
         defaults={'email': order_serializer.validated_data['customer']['email'],
@@ -75,14 +94,53 @@ def register_order(request):
 
     return redirect(reverse('cakeshop:create-checkout-session', kwargs={'order_id': order.id}))
 
-   # context = {}
-  #  return render(request, 'index.html', context)
+
+def create_order_form(request):
+    order_data = dict(request.POST.items())
+    print(dict(request.POST.items()))
+    # {'lvls': '3', 'form': '3',
+    # 'topping': '3', 'berries':
+    # '4', 'decor': '5', 'words': '123114',
+    # 'comment': '', 'name': 'Илья', 'phone':
+    # '89870608786', 'email': 'viktoryisnear@gmail.com',
+    # 'address': 'Дом', 'date': '22.22.22', 'time': '12:21',
+    # 'csrfmiddlewaretoken': 'raHnzakSbl1j9AOvYvkkPN4h8MEM6rZALp1VZp3hMGOq4u9rQqEXSoGfPmZQsdVZ'}
+    time = '2022-04-28 01:08:49.016151'
+    customer, created = Customer.objects.get_or_create(
+        phonenumber=order_data['phone'],
+        defaults={'email': order_data['email'],
+                  'name': order_data['name'],
+                  'address': order_data['address']}
+    )
+    if not created:  # Обновляем информацию о клиенте
+        customer.email = order_data['email']
+        customer.name = order_data['name']
+        customer.address = order_data['address']
+        customer.save()
+    cake = Cake.objects.create(
+        height=Height.objects.get(height_codename=order_data['lvls']),
+        shape=Shape.objects.get(shape_codename=order_data['form']),
+        topping=Topping.objects.get(topping_codename=order_data['topping']),
+        berry=Berry.objects.get(berry_codename=order_data.get('berries')),
+        decoration=Decoration.objects.get(decoration_codename=order_data.get('decor')),
+        inscription=order_data.get('words'),
+    )
+    Cake.add_price(cake)
+    price = cake.price
+    order = Order.objects.create(
+        cake=cake,
+        customer=customer,
+        price=price,
+        delivery_datetime=time,
+        delivery_address=order_data['address'],
+    )
+
+    return redirect(reverse('cakeshop:create-checkout-session', kwargs={'order_id': order.id}))
 
 
-#  login required
 def personal(request):
     current_user = request.user
-    customer = Customer.objects.get(name=current_user)  # TODO add 'with_orders' method
+    customer = Customer.objects.get_object_or_404(name=current_user)
 
     customer_details = {
         'name': customer.name,
@@ -97,7 +155,7 @@ def personal(request):
               .select_related('cake__topping')
               .select_related('cake__berry')
               .select_related('cake__decoration')
-              .filter(customer=customer))  # TODO add 'with_params' method
+              .filter(customer=customer))
     orders_details = []
     for order in orders:
         orders_details.append({
@@ -134,16 +192,16 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 def session(request, order_id):
     order = Order.objects.get(id=order_id)
     YOUR_DOMAIN = 'http://127.0.0.1:8000'
-
+    price = order.price
     checkout_session = stripe.checkout.Session.create(
         payment_method_types=['card'],
         line_items=[
             {
                 'price_data': {
                     'currency': 'usd',
-                    'unit_amount': 2000,
+                    'unit_amount': price,
                     'product_data': {
-                        'name': 'test_payment_product'
+                        'name': f'Заказ №{order.id}, торт "{order.cake.name}"'
                     }
                 },
                 'quantity': 1,
@@ -154,5 +212,3 @@ def session(request, order_id):
         cancel_url=YOUR_DOMAIN + '/cancel',
     )
     return redirect(checkout_session.url, code=303)
-    #return redirect('https://google.com', code=303)
-

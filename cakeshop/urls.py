@@ -4,7 +4,8 @@ from .views import (main_page,
                     personal,
                     session,
                     SuccessView,
-                    CancelView,)
+                    CancelView,
+                    create_order_form)
 from django.views.generic.base import RedirectView
 
 app_name = "cakeshop"
@@ -16,4 +17,5 @@ urlpatterns = [
     path('create-checkout-session/<int:order_id>', session, name='create-checkout-session'),
     path('cancel/', CancelView.as_view(), name='cancel'),
     path('succes/', SuccessView.as_view(), name='success'),
+    path('create_order/', create_order_form, name='create_order_form')
 ]
