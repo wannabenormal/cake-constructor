@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from phonenumber_field.modelfields import PhoneNumberField
 
 class Height(models.Model):
     height = models.CharField(
@@ -166,7 +167,7 @@ class Customer(models.Model):
         max_length=200,
         help_text='username@mail.ru',
     )
-    phonenumber = models.CharField(
+    phonenumber = PhoneNumberField(
         'Номер телефона',
         max_length=50,
         help_text='+79987651244',
