@@ -1,3 +1,8 @@
+import hashlib
+import random
+import string
+
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from rest_framework.decorators import api_view
@@ -38,7 +43,6 @@ def main_page(request):
              "decoration_name": decoration.decoration,
              "decoration_price": decoration.price} for decoration in decorations],
     }
-    print(context)
     return render(request, 'index.html', context)
 
 
@@ -99,7 +103,6 @@ def register_order(request):
 
 def create_order_form(request):
     order_data = dict(request.POST.items())
-    print(dict(request.POST.items()))
     # {'lvls': '3', 'form': '3',
     # 'topping': '3', 'berries':
     # '4', 'decor': '5', 'words': '123114',
@@ -187,46 +190,12 @@ def personal(request):
 
 
 def success_payment(request, order_id):
+
     order = get_object_or_404(Order, id=order_id)
     order.status = 'Готовится'
     order.save()
-    customer = order.customer
 
-    customer_details = {
-        'name': customer.name,
-        'email': customer.email,
-        'phonenumber': customer.phonenumber
-    }
-
-    orders = (Order.objects
-              .prefetch_related('cake')
-              .select_related('cake__shape')
-              .select_related('cake__height')
-              .select_related('cake__topping')
-              .select_related('cake__berry')
-              .select_related('cake__decoration')
-              .filter(customer=customer))
-    orders_details = []
-    for order in orders:
-        orders_details.append({
-            'id': order.id,
-            'cake_name': order.cake.name,
-            'status': order.status,
-            'delivery_datetime': order.delivery_datetime,
-            'height': order.cake.height,
-            'shape': order.cake.shape,
-            'topping': order.cake.topping,
-            'berry': order.cake.berry,
-            'decoration': order.cake.decoration,
-            'inscription': order.cake.inscription,
-        })
-
-    context = {
-        'orders': orders_details,
-        'customer': customer_details
-    }
-
-    return render(request, 'lk.html', context)
+    return redirect(reverse('cakeshop:main_page'))
 
 
 def cancel_payment(request, order_id):
