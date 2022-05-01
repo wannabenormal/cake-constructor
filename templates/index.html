@@ -15,7 +15,7 @@
 	<script src="https://unpkg.com/vee-validate"></script>
 	<title>Тортики</title>
     <script>
-        function displayRadioValue() {
+        {% comment %} function displayRadioValue() {
             var cost = 0
 
             var heights = document.getElementsByName('lvls');
@@ -66,7 +66,7 @@
                 document.getElementById("result").innerHTML
                     = cost;
             }
-        }
+        } {% endcomment %}
     </script>
 </head>
 <body>
@@ -230,11 +230,11 @@
         <br>
 				<h2 class="font_Gogh fs_40 cake_blue text-center">Создать свой торт</h2>
         <br>
-                    <form method="post" action="/create_order/" id="inputData" onclick="displayRadioValue()">
+                    <form method="post" action="/create_order/" id="inputData">
                     <div class="d-flex align-items-center flex-wrap mb-3">
                     <span class="me-3 fs_40 cake_blue">Количество уровней</span>
                     {% for height in heights %}
-                        <input type="radio" name="lvls" id="{{ height.height_name }}" value={{ height.height_codename }} data-price={{ height.height_price }} class="d-none cake__input" >
+                        <input type="radio" name="lvls" id="{{ height.height_name }}" value={{ height.height_codename }} data-price={{ height.height_price }} class="d-none cake__input" {% if forloop.first %} checked {% endif %}>
                         <label for="{{ height.height_name }}" class="mx-2 px-3 py-1 cake_grey cake__label">{{ height.height_name }}</label>
                     {% endfor %}
                     </div>
@@ -242,14 +242,14 @@
 					<div class="d-flex align-items-center flex-wrap mb-3">
 						<span class="me-3 fs_40 cake_blue">Форма</span>
                         {% for shape in shapes %}
-                            <input type="radio" name="shape" id="{{ shape.shape_name }}" value={{ shape.shape_codename }} data-price={{ shape.shape_price }} class="d-none cake__input" >
+                            <input type="radio" name="shape" id="{{ shape.shape_name }}" value={{ shape.shape_codename }} data-price={{ shape.shape_price }} class="d-none cake__input" {% if forloop.first %} checked {% endif %} >
                             <label for="{{ shape.shape_name }}" class="mx-2 px-3 py-1 cake_grey cake__label">{{ shape.shape_name }}</label>
                         {% endfor %}
 					</div>
 					<div class="d-flex align-items-center flex-wrap mb-3">
 						<span class="me-3 fs_40 cake_blue">Топпинг</span>
                         {% for topping in toppings %}
-                            <input type="radio" name="topping" id="{{ topping.topping_name }}" value={{ topping.topping_codename }} data-price={{ topping.topping_price }} class="d-none cake__input" >
+                            <input type="radio" name="topping" id="{{ topping.topping_name }}" value={{ topping.topping_codename }} data-price={{ topping.topping_price }} class="d-none cake__input" {% if forloop.first %} checked {% endif %} >
                             <label for="{{ topping.topping_name }}" class="mx-2 px-3 py-1 cake_grey cake__label">{{ topping.topping_name }}</label>
                         {% endfor %}
 					</div>
@@ -257,14 +257,14 @@
 					<div class="d-flex align-items-center flex-wrap mb-3">
 						<span class="me-3 fs_40 cake_blue">Ягоды</span>
                         {% for berry in berries %}
-                            <input type="radio" name="berries" id="{{ berry.berry_name }}" value={{ berry.berry_codename }} data-price={{ berry.berry_price }} class="d-none cake__input" >
+                            <input type="radio" name="berries" id="{{ berry.berry_name }}" value={{ berry.berry_codename }} data-price={{ berry.berry_price }} class="d-none cake__input" {% if forloop.first %} checked {% endif %} >
                             <label for="{{ berry.berry_name }}" class="mx-2 px-3 py-1 cake_grey cake__label">{{ berry.berry_name }}</label>
                         {% endfor %}
 					</div>
 					<div class="d-flex align-items-center flex-wrap mb-3">
 						<span class="me-3 fs_40 cake_blue">Декор</span>
                         {% for decoration in decorations %}
-                            <input type="radio" name="decor" id="{{ decoration.decoration_name }}" value={{ decoration.decoration_codename }} data-price={{ decoration.decoration_price }} class="d-none cake__input" >
+                            <input type="radio" name="decor" id="{{ decoration.decoration_name }}" value={{ decoration.decoration_codename }} data-price={{ decoration.decoration_price }} class="d-none cake__input" {% if forloop.first %} checked {% endif %} >
                             <label for="{{ decoration.decoration_name }}" class="mx-2 px-3 py-1 cake_grey cake__label">{{ decoration.decoration_name }}</label>
                         {% endfor %}
 					</div>
@@ -321,9 +321,7 @@
 							</div>
 							<div class="col-12 col-md-6 d-flex flex-column align-items-center align-items-md-end mt-3 mt-md-0">
 								<div class="d-flex">
-									{% verbatim %}
-									<span class="cake_pink fs_40 fw-bold me-2" id="result"></span><span class="cake_pink fs_40 fw-bold me-2">₽</span>
-									{% endverbatim %}
+									<span class="cake_pink fs_40 fw-bold me-2" id="result">{{ heights.0.height_price|add:shapes.0.shape_price|add:toppings.0.topping_price }}</span><span class="cake_pink fs_40 fw-bold me-2"> ₽</span>
 								</div>
                                 {% csrf_token %}
 								<button type="submit" class="btn btn_hover text-white rounded-pill mt-3 px-5 shadow-none cake__button cake__bg_pink">К оплате</button>
@@ -368,6 +366,7 @@
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <script src="{% static 'index.js' %}"></script>
+<script src="{% static 'constructor.js' %}"></script>
 <script src="{% static 'registration.js' %}"></script>
 </body>
 </html>
