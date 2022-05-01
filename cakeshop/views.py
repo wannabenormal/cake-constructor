@@ -127,14 +127,20 @@ def create_order_form(request):
         decoration=Decoration.objects.get(decoration_codename=order_data.get('decor')),
         inscription=order_data.get('words'),
     )
+    # if promocode: price = price*(1(-promocode.value/100))
+    # if cake.promocode
+    # is_urgent = calculate
+    # if is_urgent: price * 1.2
     Cake.add_price(cake)
     price = cake.price
+
     order = Order.objects.create(
         cake=cake,
         customer=customer,
         price=price,
         delivery_datetime=time,
         delivery_address=order_data['address'],
+        # add is_urgent
     )
 
     return redirect(reverse('cakeshop:create-checkout-session', kwargs={'order_id': order.id}))
@@ -180,12 +186,52 @@ def personal(request):
     return render(request, 'lk.html', context)
 
 
-class SuccessView(TemplateView):
-    template_name = 'success.html'
+def success_payment(request, order_id):
+    order = Order.objects.get(id=order_id)
+    order.status = 'Готовится'
+    order.save()
+    customer = order.customer
+
+    customer_details = {
+        'name': customer.name,
+        'email': customer.email,
+        'phonenumber': customer.phonenumber
+    }
+
+    orders = (Order.objects
+              .prefetch_related('cake')
+              .select_related('cake__shape')
+              .select_related('cake__height')
+              .select_related('cake__topping')
+              .select_related('cake__berry')
+              .select_related('cake__decoration')
+              .filter(customer=customer))
+    orders_details = []
+    for order in orders:
+        orders_details.append({
+            'id': order.id,
+            'cake_name': order.cake.name,
+            'status': order.status,
+            'delivery_datetime': order.delivery_datetime,
+            'height': order.cake.height,
+            'shape': order.cake.shape,
+            'topping': order.cake.topping,
+            'berry': order.cake.berry,
+            'decoration': order.cake.decoration,
+            'inscription': order.cake.inscription,
+        })
+
+    context = {
+        'orders': orders_details,
+        'customer': customer_details
+    }
+
+    return render(request, 'lk.html', context)
 
 
-class CancelView(TemplateView):
-    template_name = 'cancel.html'
+def cancel_payment(request, order_id):
+
+    return render(request, 'cancel.html')
 
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -200,8 +246,8 @@ def session(request, order_id):
         line_items=[
             {
                 'price_data': {
-                    'currency': 'usd',
-                    'unit_amount': price,
+                    'currency': 'rub',
+                    'unit_amount': price * 100,
                     'product_data': {
                         'name': f'Заказ №{order.id}, торт "{order.cake.name}"'
                     }
@@ -210,7 +256,7 @@ def session(request, order_id):
             },
         ],
         mode='payment',
-        success_url=YOUR_DOMAIN + '/success',
+        success_url=YOUR_DOMAIN + '/success/' + str(order_id),
         cancel_url=YOUR_DOMAIN + '/cancel',
     )
     return redirect(checkout_session.url, code=303)
