@@ -148,7 +148,7 @@ def create_order_form(request):
 
 def personal(request):
     current_user = request.user
-    customer = Customer.objects.get_object_or_404(name=current_user)
+    customer = get_object_or_404(Customer, name=current_user)
 
     customer_details = {
         'name': customer.name,
@@ -187,7 +187,7 @@ def personal(request):
 
 
 def success_payment(request, order_id):
-    order = Order.objects.get(id=order_id)
+    order = get_object_or_404(Order, id=order_id)
     order.status = 'Готовится'
     order.save()
     customer = order.customer
