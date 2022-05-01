@@ -1,189 +1,208 @@
 Vue.createApp({
-    name: "App",
-    components: {
-        VForm: VeeValidate.Form,
-        VField: VeeValidate.Field,
-        ErrorMessage: VeeValidate.ErrorMessage,
-    },
-    data() {
-        return {
-            schema1: {
-                lvls: (value) => {
-                    if (value) {
-                        return true;
-                    }
-                    return ' количество уровней';
-                },
-                form: (value) => {
-                    if (value) {
-                        return true;
-                    }
-                    return ' форму торта';
-                },
-                topping: (value) => {
-                    if (value) {
-                        return true;
-                    }
-                    return ' топпинг';
-                }
-            },
-            schema2: {
-                name: (value) => {
-                    if (value) {
-                        return true;
-                    }
-                    return ' имя';
-                },
-                phone: (value) => {
-                    if (value) {
-                        return true;
-                    }
-                    return ' телефон';
-                },
-                email_format: (value) => {
-                    const regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
-                    if (!value) {
-                        return true;
-                    }
-                    if ( !regex.test(value)) {
-
-                        return '⚠ Формат почты нарушен';
-                    }
-                    return true;
-                },
-                phone_format:(value) => {
-                    const regex = /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/
-                    if (!value) {
-                        return true;
-                    }
-                    if ( !regex.test(value)) {
-
-                        return '⚠ Формат телефона нарушен';
-                    }
-                    return true;
-                },
-                email: (value) => {
-                    if (value) {
-                        return true;
-                    }
-                    return ' почту';
-                },
-                address: (value) => {
-                    if (value) {
-                        return true;
-                    }
-                    return ' адрес';
-                },
-                date: (value) => {
-                    if (value) {
-                        return true;
-                    }
-                    return ' дату доставки';
-                },
-                time: (value) => {
-                    if (value) {
-                        return true;
-                    }
-                    return ' время доставки';
-                }
-            },
-            DATA: {
-                Levels: ['не выбрано', '1', '2', '3'],
-                Forms: ['не выбрано', 'Круг', 'Квадрат', 'Прямоугольник'],
-                Toppings: ['не выбрано', 'Без', 'Белый соус', 'Карамельный', 'Кленовый', 'Черничный', 'Молочный шоколад', 'Клубничный'],
-                Berries: ['нет', 'Ежевика', 'Малина', 'Голубика', 'Клубника'],
-                Decors: [ 'нет', 'Фисташки', 'Безе', 'Фундук', 'Пекан', 'Маршмеллоу', 'Марципан']
-            },
-            Costs: {
-                Levels: [0, 400, 750, 1100],
-                Forms: [0, 600, 400, 1000],
-                Toppings: [0, 0, 200, 180, 200, 300, 350, 200],
-                Berries: [0, 400, 300, 450, 500],
-                Decors: [0, 300, 400, 350, 300, 200, 280],
-                Words: 500
-            },
-            Levels: 0,
-            Form: 0,
-            Topping: 0,
-            Berries: 0,
-            Decor: 0,
-            Words: '',
-            Comments: '',
-            Designed: false,
-
-            Name: '',
-            Phone: null,
-            Email: null,
-            Address: null,
-            Dates: null,
-            Time: null,
-            DelivComments: ''
-        }
-    },
-    methods: {
-        ToStep4() {
-            this.Designed = true
-            setTimeout(() => this.$refs.ToStep4.click(), 0);
-
+  name: 'App',
+  components: {
+    VForm: VeeValidate.Form,
+    VField: VeeValidate.Field,
+    ErrorMessage: VeeValidate.ErrorMessage,
+  },
+  data() {
+    return {
+      schema1: {
+        lvls: (value) => {
+          if (value) {
+            return true;
+          }
+          return ' количество уровней';
         },
-        SubmitOrder() {
-            //Тут выведен в консоль объект, описывающий заказ полностью. Сработает только после прохождения валидации 2ой формы:
-            console.log(JSON.stringify({
-                delivery_datetime: this.Dates + this.Time,
-                delivery_address: this.Address,
-                price: this.Cost,
-                customer: {
-                    name: this.Name,
-                    phonenumber: this.Phone,
-                    email: this.Email,
-                    address: this.Address,
-                },
-                cake: {
-                    height: this.DATA.Levels[this.Levels],
-                    shape: this.DATA.Forms[this.Form],
-                    topping: this.DATA.Toppings[this.Topping],
-                    berry: this.DATA.Berries[this.Berries],
-                    decoration: this.DATA.Decors[this.Decor],
-                    inscription: this.Words,
-                },
-                comments: this.Comments,
-            }, null, 2))
+        form: (value) => {
+          if (value) {
+            return true;
+          }
+          return ' форму торта';
+        },
+        topping: (value) => {
+          if (value) {
+            return true;
+          }
+          return ' топпинг';
+        },
+      },
+      schema2: {
+        name: (value) => {
+          if (value) {
+            return true;
+          }
+          return ' имя';
+        },
+        phone: (value) => {
+          if (value) {
+            return true;
+          }
+          return ' телефон';
+        },
+        email_format: (value) => {
+          const regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+          if (!value) {
+            return true;
+          }
+          if (!regex.test(value)) {
+            return '⚠ Формат почты нарушен';
+          }
+          return true;
+        },
+        phone_format: (value) => {
+          const regex = /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/;
+          if (!value) {
+            return true;
+          }
+          if (!regex.test(value)) {
+            return '⚠ Формат телефона нарушен';
+          }
+          return true;
+        },
+        email: (value) => {
+          if (value) {
+            return true;
+          }
+          return ' почту';
+        },
+        address: (value) => {
+          if (value) {
+            return true;
+          }
+          return ' адрес';
+        },
+        date: (value) => {
+          if (value) {
+            return true;
+          }
+          return ' дату доставки';
+        },
+        time: (value) => {
+          if (value) {
+            return true;
+          }
+          return ' время доставки';
+        },
+      },
+      DATA: {
+        Levels: ['не выбрано', '1', '2', '3'],
+        Forms: ['не выбрано', 'Круг', 'Квадрат', 'Прямоугольник'],
+        Toppings: [
+          'не выбрано',
+          'Без',
+          'Белый соус',
+          'Карамельный',
+          'Кленовый',
+          'Черничный',
+          'Молочный шоколад',
+          'Клубничный',
+        ],
+        Berries: ['нет', 'Ежевика', 'Малина', 'Голубика', 'Клубника'],
+        Decors: ['нет', 'Фисташки', 'Безе', 'Фундук', 'Пекан', 'Маршмеллоу', 'Марципан'],
+      },
+      Costs: {
+        Levels: [0, 400, 750, 1100],
+        Forms: [0, 600, 400, 1000],
+        Toppings: [0, 0, 200, 180, 200, 300, 350, 200],
+        Berries: [0, 400, 300, 450, 500],
+        Decors: [0, 300, 400, 350, 300, 200, 280],
+        Words: 500,
+      },
+      Levels: 0,
+      Form: 0,
+      Topping: 0,
+      Berries: 0,
+      Decor: 0,
+      Words: '',
+      Comments: '',
+      Designed: false,
 
-
-            var json_resp = new XMLHttpRequest();
-            json_resp.open('POST', 'register_order/');
-            json_resp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            json_resp.send(JSON.stringify({
-                delivery_datetime: '2022-04-28 01:08:49.016151',  //this.Time, this.Dates  YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z
-                delivery_address: this.Address,
-                price: this.Cost,
-                customer: {
-                    name: this.Name,
-                    phonenumber: this.Phone,
-                    email: this.Email,
-                    address: this.Address,
-                },
-                cake: {
-                    height: "one",// this.DATA.Levels[this.Levels],
-                    shape: "s", //this.DATA.Forms[this.Form],
-                    topping: "maple", //this.DATA.Toppings[this.Topping],
-                    berry: "bramble", //this.DATA.Berries[this.Berries],
-                    decoration: "pecan", //this.DATA.Decors[this.Decor],
-                    inscription: this.Words,
-                },
-                comments: this.Comments,
-
-
-            }, null, 2));
-
-        }
+      Name: '',
+      Phone: null,
+      Email: null,
+      Address: null,
+      Dates: null,
+      Time: null,
+      DelivComments: '',
+    };
+  },
+  methods: {
+    ToStep4() {
+      this.Designed = true;
+      setTimeout(() => this.$refs.ToStep4.click(), 0);
     },
-    computed: {
-        Cost() {
-            let W = this.Words ? this.Costs.Words : 0
-            return this.Costs.Levels[this.Levels] + this.Costs.Forms[this.Form] +
-                this.Costs.Toppings[this.Topping] + this.Costs.Berries[this.Berries] +
-                this.Costs.Decors[this.Decor] + W
-        }
-    }
-}).mount('#VueApp')
+    SubmitOrder() {
+      //Тут выведен в консоль объект, описывающий заказ полностью. Сработает только после прохождения валидации 2ой формы:
+      console.log(
+        JSON.stringify(
+          {
+            delivery_datetime: this.Dates + this.Time,
+            delivery_address: this.Address,
+            price: this.Cost,
+            customer: {
+              name: this.Name,
+              phonenumber: this.Phone,
+              email: this.Email,
+              address: this.Address,
+            },
+            cake: {
+              height: this.DATA.Levels[this.Levels],
+              shape: this.DATA.Forms[this.Form],
+              topping: this.DATA.Toppings[this.Topping],
+              berry: this.DATA.Berries[this.Berries],
+              decoration: this.DATA.Decors[this.Decor],
+              inscription: this.Words,
+            },
+            comments: this.Comments,
+          },
+          null,
+          2
+        )
+      );
+
+      var json_resp = new XMLHttpRequest();
+      json_resp.open('POST', 'register_order/');
+      json_resp.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+      json_resp.send(
+        JSON.stringify(
+          {
+            delivery_datetime: '2022-04-28 01:08:49.016151', //this.Time, this.Dates  YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z
+            delivery_address: this.Address,
+            price: this.Cost,
+            customer: {
+              name: this.Name,
+              phonenumber: this.Phone,
+              email: this.Email,
+              address: this.Address,
+            },
+            cake: {
+              height: 'one', // this.DATA.Levels[this.Levels],
+              shape: 's', //this.DATA.Forms[this.Form],
+              topping: 'maple', //this.DATA.Toppings[this.Topping],
+              berry: 'bramble', //this.DATA.Berries[this.Berries],
+              decoration: 'pecan', //this.DATA.Decors[this.Decor],
+              inscription: this.Words,
+            },
+            comments: this.Comments,
+          },
+          null,
+          2
+        )
+      );
+    },
+  },
+  computed: {
+    Cost() {
+      let W = this.Words ? this.Costs.Words : 0;
+      return (
+        this.Costs.Levels[this.Levels] +
+        this.Costs.Forms[this.Form] +
+        this.Costs.Toppings[this.Topping] +
+        this.Costs.Berries[this.Berries] +
+        this.Costs.Decors[this.Decor] +
+        W
+      );
+    },
+  },
+}).mount('#VueApp');

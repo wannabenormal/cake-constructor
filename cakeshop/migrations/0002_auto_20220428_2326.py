@@ -15,6 +15,7 @@ def create_objs(apps, schema_editor):
     ])
 
     Berry.objects.bulk_create([
+        Berry(berry="Без ягод", berry_codename="without", price=0),
         Berry(berry="Ежевика", berry_codename="bramble", price=400),
         Berry(berry="Малина", berry_codename="rasp", price=300),
         Berry(berry="Голубика", berry_codename="blue", price=450),
@@ -31,6 +32,7 @@ def create_objs(apps, schema_editor):
     ])
 
     Decoration.objects.bulk_create([
+        Decoration(decoration="Без декора", decoration_codename="without", price=0),
         Decoration(decoration="Фисташки", decoration_codename="pistachio", price=300),
         Decoration(decoration="Безе", decoration_codename="bese", price=400),
         Decoration(decoration="Фундук", decoration_codename="hazelnut", price=350),

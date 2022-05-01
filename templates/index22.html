@@ -191,12 +191,10 @@
                     </div>
                     <div class="d-flex align-items-center flex-wrap mb-3">
                         <span class="me-3 fs_40 cake_blue">Количество уровней</span>
-                        <v-field v-model="Levels" type="radio" name="lvls" id="num1" value="1" class="d-none cake__input"></v-field>
-                        <label for="num1" class="mx-2 px-3 py-1 cake_grey cake__label">1</label>
-                        <v-field v-model="Levels" type="radio" name="lvls" id="num2" value="2" class="d-none cake__input"></v-field>
-                        <label for="num2" class="mx-2 px-3 py-1 cake_grey cake__label">2</label>
-                        <v-field v-model="Levels" type="radio" name="lvls" id="num3" value="3" class="d-none cake__input"></v-field>
-                        <label for="num3" class="mx-2 px-3 py-1 cake_grey cake__label">3</label>
+                        {% for height in heights %}
+                          <v-field v-model="Levels" type="radio" name="lvls" id="num1" value="{{ height.height_codename }}" price="{{ height.height_price }}" class="d-none cake__input"></v-field>
+                          <label for="num1" class="mx-2 px-3 py-1 cake_grey cake__label">{{ height.height_name }}</label>
+                        {% endfor %}
                     </div>
 
                     <div class="d-flex align-items-center flex-wrap mb-3">

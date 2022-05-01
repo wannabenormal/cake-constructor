@@ -19,7 +19,6 @@ class CustomerAdmin(admin.ModelAdmin):
 
 @admin.register(Cake)
 class CakeAdmin(admin.ModelAdmin):
-    raw_id_fields = 'height', 'shape', 'topping', 'berry', 'decoration'
     list_display = 'name', 'height', 'shape', 'topping', 'berry', 'decoration', 'price'
     list_editable = 'height', 'shape', 'topping', 'berry', 'decoration'
 
