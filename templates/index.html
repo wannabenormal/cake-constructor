@@ -10,10 +10,64 @@
 	<link rel="stylesheet" href="{% static 'Style.css' %}">
 	<!-- Для разработки: -->
 	<script src="https://unpkg.com/vue@3"></script>
-	<!-- Для продакшина: -->
+	<!-- Для продакшена: -->
 	<!-- <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script> -->
 	<script src="https://unpkg.com/vee-validate"></script>
 	<title>Тортики</title>
+    <script>
+        function displayRadioValue() {
+            var cost = 0
+
+            var heights = document.getElementsByName('lvls');
+
+            for(i = 0; i < heights.length; i++) {
+                if(heights[i].checked)
+                    cost += parseInt(heights[i].dataset.price)
+                    document.getElementById("result").innerHTML
+                        = cost;
+            }
+            var shape = document.getElementsByName('shape');
+
+            for(i = 0; i < shape.length; i++) {
+                if(shape[i].checked)
+                    cost += parseInt(shape[i].dataset.price)
+                    document.getElementById("result").innerHTML
+                        = cost;
+            }
+            var topping = document.getElementsByName('topping');
+
+            for(i = 0; i < topping.length; i++) {
+                if(topping[i].checked)
+                    cost += parseInt(topping[i].dataset.price)
+                    document.getElementById("result").innerHTML
+                        = cost;
+            }
+            var berry = document.getElementsByName('berries');
+
+            for(i = 0; i < berry.length; i++) {
+                if(berry[i].checked)
+                    cost += parseInt(berry[i].dataset.price)
+                    document.getElementById("result").innerHTML
+                        = cost;
+            }
+            var decor = document.getElementsByName('decor');
+
+            for(i = 0; i < decor.length; i++) {
+                if(decor[i].checked)
+                    cost += parseInt(decor[i].dataset.price)
+                    document.getElementById("result").innerHTML
+                        = cost;
+            }
+
+            var words = document.getElementsByName('words');
+
+            {if(words.value.empty())
+                    cost += 500
+                document.getElementById("result").innerHTML
+                    = cost;
+            }
+        }
+    </script>
 </head>
 <body>
 <header class="navbar navbar-expand-xl navbar-light fixed-top bg-white py-4">
@@ -176,72 +230,48 @@
         <br>
 				<h2 class="font_Gogh fs_40 cake_blue text-center">Создать свой торт</h2>
         <br>
-                    <form method="post" action="/create_order/">
+                    <form method="post" action="/create_order/" id="inputData" onclick="displayRadioValue()">
                     <div class="d-flex align-items-center flex-wrap mb-3">
-                        <span class="me-3 fs_40 cake_blue">Количество уровней</span>
-                        <input type="radio" name="lvls" id="num1" value="one" class="d-none cake__input">
-                        <label for="num1" class="mx-2 px-3 py-1 cake_grey cake__label">1</label>
-                        <input  type="radio" name="lvls" id="num2" value="two" class="d-none cake__input">
-                        <label for="num2" class="mx-2 px-3 py-1 cake_grey cake__label">2</label>
-                        <input  type="radio" name="lvls" id="num3" value="three" class="d-none cake__input">
-                        <label for="num3" class="mx-2 px-3 py-1 cake_grey cake__label">3</label>
+                    <span class="me-3 fs_40 cake_blue">Количество уровней</span>
+                    {% for height in heights %}
+                        <input type="radio" name="lvls" id="{{ height.height_name }}" value={{ height.height_codename }} data-price={{ height.height_price }} class="d-none cake__input" >
+                        <label for="{{ height.height_name }}" class="mx-2 px-3 py-1 cake_grey cake__label">{{ height.height_name }}</label>
+                    {% endfor %}
                     </div>
 
 					<div class="d-flex align-items-center flex-wrap mb-3">
 						<span class="me-3 fs_40 cake_blue">Форма</span>
-						<input type="radio" name="form" id="form1" value="c" class="d-none cake__input">
-						<label for="form1" class="mx-2 px-3 py-1 cake_grey cake__label">Круг</label>
-						<input type="radio" name="form" id="form2" value="s" class="d-none cake__input">
-						<label for="form2" class="mx-2 px-3 py-1 cake_grey cake__label">Квадрат</label>
-						<input type="radio" name="form" id="form3" value="r" class="d-none cake__input">
-						<label for="form3" class="mx-2 px-3 py-1 cake_grey cake__label">Прямоугольник</label>
+                        {% for shape in shapes %}
+                            <input type="radio" name="shape" id="{{ shape.shape_name }}" value={{ shape.shape_codename }} data-price={{ shape.shape_price }} class="d-none cake__input" >
+                            <label for="{{ shape.shape_name }}" class="mx-2 px-3 py-1 cake_grey cake__label">{{ shape.shape_name }}</label>
+                        {% endfor %}
 					</div>
 					<div class="d-flex align-items-center flex-wrap mb-3">
 						<span class="me-3 fs_40 cake_blue">Топпинг</span>
-						<input type="radio" name="topping" id="topping1" value="without" class="d-none cake__input">
-						<label for="topping1" class="mx-2 px-3 py-1 cake_grey cake__label">Без</label>
-						<input type="radio" name="topping" id="topping2" value="white_sauce" class="d-none cake__input">
-						<label for="topping2" class="mx-2 px-3 py-1 cake_grey cake__label">Белый соус</label>
-						<input type="radio" name="topping" id="topping3" value="caramel" class="d-none cake__input">
-						<label for="topping3" class="mx-2 px-3 py-1 cake_grey cake__label">Карамельный</label>
-						<input type="radio" name="topping" id="topping4" value="maple" class="d-none cake__input">
-						<label for="topping4" class="mx-2 px-3 py-1 cake_grey cake__label">Кленовый</label>
-						<input type="radio" name="topping" id="topping5" value="blueberry" class="d-none cake__input">
-						<label for="topping5" class="mx-2 px-3 py-1 cake_grey cake__label">Черничный</label>
-						<input type="radio" name="topping" id="topping6" value="white_choco" class="d-none cake__input">
-						<label for="topping6" class="mx-2 px-3 py-1 cake_grey cake__label">Молочный шоколад</label>
+                        {% for topping in toppings %}
+                            <input type="radio" name="topping" id="{{ topping.topping_name }}" value={{ topping.topping_codename }} data-price={{ topping.topping_price }} class="d-none cake__input" >
+                            <label for="{{ topping.topping_name }}" class="mx-2 px-3 py-1 cake_grey cake__label">{{ topping.topping_name }}</label>
+                        {% endfor %}
 					</div>
 					<h1 class="me-3 fs_40 cake_pink mb-3 mt-5">Дополнительно</h1>
 					<div class="d-flex align-items-center flex-wrap mb-3">
 						<span class="me-3 fs_40 cake_blue">Ягоды</span>
-						<input type="radio" name="berries" id="berries1" value="bramble" class="d-none cake__input">
-						<label for="berries1" class="mx-2 px-3 py-1 cake_grey cake__label">Ежевика</label>
-						<input type="radio" name="berries" id="berries2" value="rasp" class="d-none cake__input">
-						<label for="berries2" class="mx-2 px-3 py-1 cake_grey cake__label">Малина</label>
-						<input type="radio" name="berries" id="berries3" value="blue" class="d-none cake__input">
-						<label for="berries3" class="mx-2 px-3 py-1 cake_grey cake__label">Голубика</label>
-						<input type="radio" name="berries" id="berries4" value="straw" class="d-none cake__input">
-						<label for="berries4" class="mx-2 px-3 py-1 cake_grey cake__label">Клубника</label>
+                        {% for berry in berries %}
+                            <input type="radio" name="berries" id="{{ berry.berry_name }}" value={{ berry.berry_codename }} data-price={{ berry.berry_price }} class="d-none cake__input" >
+                            <label for="{{ berry.berry_name }}" class="mx-2 px-3 py-1 cake_grey cake__label">{{ berry.berry_name }}</label>
+                        {% endfor %}
 					</div>
 					<div class="d-flex align-items-center flex-wrap mb-3">
 						<span class="me-3 fs_40 cake_blue">Декор</span>
-						<input type="radio" name="decor" id="decor1" value="pistachio" class="d-none cake__input">
-						<label for="decor1" class="mx-2 px-3 py-1 cake_grey cake__label">Фисташки</label>
-						<input type="radio" name="decor" id="decor2" value="bese" class="d-none cake__input">
-						<label for="decor2" class="mx-2 px-3 py-1 cake_grey cake__label">Безе</label>
-						<input type="radio" name="decor" id="decor3" value="hazelnut" class="d-none cake__input">
-						<label for="decor3" class="mx-2 px-3 py-1 cake_grey cake__label">Фундук</label>
-						<input type="radio" name="decor" id="decor4" value="pecan" class="d-none cake__input">
-						<label for="decor4" class="mx-2 px-3 py-1 cake_grey cake__label">Пекан</label>
-						<input type="radio" name="decor" id="decor5" value="marsh" class="d-none cake__input">
-						<label for="decor5" class="mx-2 px-3 py-1 cake_grey cake__label">Маршмеллоу</label>
-						<input type="radio" name="decor" id="decor6" value="marzipan" class="d-none cake__input">
-						<label for="decor6" class="mx-2 px-3 py-1 cake_grey cake__label">Марципан</label>
+                        {% for decoration in decorations %}
+                            <input type="radio" name="decor" id="{{ decoration.decoration_name }}" value={{ decoration.decoration_codename }} data-price={{ decoration.decoration_price }} class="d-none cake__input" >
+                            <label for="{{ decoration.decoration_name }}" class="mx-2 px-3 py-1 cake_grey cake__label">{{ decoration.decoration_name }}</label>
+                        {% endfor %}
 					</div>
 					<div class="row mb-3">
 						<div class="col-5 col-md-4 col-lg-3">
 							<label class="me-3 fs_40 cake_blue" for="words">Надпись</label>
-						</div>
+                        </div>
 						<div class="col-7 col-md-8 col-lg-9 pt-2">
 							<input type="text" name="words" id="words" placeholder="Например: «С днем рождения!»..." class="form-control cake__textinput">
 						</div>
@@ -292,7 +322,7 @@
 							<div class="col-12 col-md-6 d-flex flex-column align-items-center align-items-md-end mt-3 mt-md-0">
 								<div class="d-flex">
 									{% verbatim %}
-									<span class="cake_pink fs_40 fw-bold me-2">Итого: {{ Cost }}₽</span>
+									<span class="cake_pink fs_40 fw-bold me-2" id="result"></span><span class="cake_pink fs_40 fw-bold me-2">₽</span>
 									{% endverbatim %}
 								</div>
                                 {% csrf_token %}
@@ -337,7 +367,6 @@
 	</div>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
 <script src="{% static 'index.js' %}"></script>
 <script src="{% static 'registration.js' %}"></script>
 </body>

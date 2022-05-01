@@ -16,27 +16,29 @@ def main_page(request):
     berries = Berry.objects.all()
     decorations = Decoration.objects.all()
 
-    context = {"heights":
-                   {"heights_codenames": [height.height_codename for height in heights],
-                    "heights_names": [height.height for height in heights],
-                    "heights_prices": [height.price for height in heights]},
-               "shapes":
-                   {"shapes_codenames": [shape.shape_codename for shape in shapes],
-                    "shapes_names": [shape.shape for shape in shapes],
-                    "shapes_prices": [shape.price for shape in shapes]},
-               "toppings":
-                   {"toppings_codenames": [topping.topping_codename for topping in toppings],
-                    "toppings_names": [topping.topping for topping in toppings],
-                    "toppings_prices": [topping.price for topping in toppings]},
-               "berries":
-                   {"berries_codenames": [berry.berry_codename for berry in berries],
-                    "berries_names": [berry.berry for berry in berries],
-                    "berries_prices": [berry.price for berry in berries]},
-               "decorations":
-                   {"decorations_codenames": [decoration.decoration_codename for decoration in decorations],
-                    "decorations_names": [decoration.decoration for decoration in decorations],
-                    "decorations_prices": [decoration.price for decoration in decorations]},
-               }
+    context = {
+        "heights": [
+            {"height_codename": height.height_codename,
+             "height_name": height.height,
+             "height_price": height.price} for height in heights],
+        "shapes": [
+            {"shape_codename": shape.shape_codename,
+             "shape_name": shape.shape,
+             "shape_price": shape.price} for shape in shapes],
+        "toppings": [
+            {"topping_codename": topping.topping_codename,
+             "topping_name": topping.topping,
+             "topping_price": topping.price} for topping in toppings],
+        "berries": [
+            {"berry_codename": berry.berry_codename,
+             "berry_name": berry.berry,
+             "berry_price": berry.price} for berry in berries],
+        "decorations": [
+            {"decoration_codename": decoration.decoration_codename,
+             "decoration_name": decoration.decoration,
+             "decoration_price": decoration.price} for decoration in decorations],
+    }
+    print(context)
     return render(request, 'index.html', context)
 
 
@@ -119,7 +121,7 @@ def create_order_form(request):
         customer.save()
     cake = Cake.objects.create(
         height=Height.objects.get(height_codename=order_data['lvls']),
-        shape=Shape.objects.get(shape_codename=order_data['form']),
+        shape=Shape.objects.get(shape_codename=order_data['shape']),
         topping=Topping.objects.get(topping_codename=order_data['topping']),
         berry=Berry.objects.get(berry_codename=order_data.get('berries')),
         decoration=Decoration.objects.get(decoration_codename=order_data.get('decor')),
