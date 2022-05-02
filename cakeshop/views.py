@@ -222,7 +222,7 @@ def session(request, order_id):
         if advertisement:
             order.referral = advertisement
     order.save()
-    YOUR_DOMAIN = settings.ALLOWED_HOSTS[-1]
+    my_domain = 'http://' + settings.ALLOWED_HOSTS[-1]
     price = order.price
     checkout_session = stripe.checkout.Session.create(
         payment_method_types=['card'],
@@ -239,7 +239,7 @@ def session(request, order_id):
             },
         ],
         mode='payment',
-        success_url=YOUR_DOMAIN + '/success/' + str(order_id),
-        cancel_url=YOUR_DOMAIN + '/cancel' + str(order_id),
+        success_url=my_domain + '/success/' + str(order_id),
+        cancel_url=my_domain + '/cancel' + str(order_id),
     )
     return redirect(checkout_session.url, code=303)
