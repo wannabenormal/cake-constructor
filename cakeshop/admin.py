@@ -12,9 +12,7 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    raw_id_fields = 'referral',
-    list_display = 'name', 'email', 'phonenumber', 'referral'
-    list_filter = 'referral',
+    list_display = 'name', 'email', 'phonenumber',
 
 
 @admin.register(Cake)

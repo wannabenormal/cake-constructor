@@ -172,14 +172,6 @@ class Customer(models.Model):
         max_length=50,
         help_text='+79987651244',
     )
-    referral = models.ForeignKey(
-        Advertisement,
-        verbose_name='Реклама, по которой перешел пользователь',
-        on_delete=models.CASCADE,
-        max_length=100,
-        blank=True,
-        null=True
-    )
     address = models.CharField(
         'Адрес заказчика',
         max_length=100,
@@ -321,6 +313,14 @@ class Order(models.Model):
         'Срочный?',
         default=False,
         db_index=True
+    )
+    referral = models.ForeignKey(
+        Advertisement,
+        verbose_name='Реклама',
+        on_delete=models.CASCADE,
+        max_length=255,
+        blank=True,
+        null=True
     )
 
     def __str__(self):

@@ -1,20 +1,16 @@
-import hashlib
-import random
-import string
-
-from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from rest_framework.decorators import api_view
-from .models import Order, Cake, Customer, Height, Shape, Topping, Berry, Decoration
+from .models import Order, Cake, Customer, Height, Shape, Topping, Berry, Decoration, Advertisement
 from .serializers import OrderSerializer
 from django.conf import settings
-from django.views.generic import TemplateView
 import stripe
 from django.shortcuts import get_object_or_404
 
 
 def main_page(request):
+    utm_referral = request.GET.get('utm_referral')
+    request.session['utm_referral'] = utm_referral
     heights = Height.objects.all()
     shapes = Shape.objects.all()
     toppings = Topping.objects.all()
@@ -102,6 +98,8 @@ def register_order(request):
 
 
 def create_order_form(request):
+    print("i'm here")
+    print(request.session.items())
     order_data = dict(request.POST.items())
     # {'lvls': '3', 'form': '3',
     # 'topping': '3', 'berries':
@@ -192,10 +190,12 @@ def personal(request):
 def success_payment(request, order_id):
 
     order = get_object_or_404(Order, id=order_id)
+    print(order.status)
     if order.status != 'Ожидает оплаты':
         return redirect(reverse('cakeshop:main_page'))
 
     order.status = 'Готовится'
+    order.save()
 
     return redirect(reverse('cakeshop:main_page'))
 
@@ -212,8 +212,14 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def session(request, order_id):
 
+    utm_referral = request.session.get('utm_referral')
+
     order = Order.objects.get(id=order_id)
     order.status = 'Ожидает оплаты'
+    if utm_referral:
+        advertisement = Advertisement.objects.filter(title=utm_referral).first()
+        if advertisement:
+            order.referral = advertisement
     order.save()
     YOUR_DOMAIN = 'http://127.0.0.1:8000'
     price = order.price

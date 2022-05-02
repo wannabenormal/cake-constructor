@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'accounts.apps.AccountsConfig',
     'phonenumber_field',
+    'utm_tracker'
 ]
 
 MIDDLEWARE = [
@@ -40,6 +41,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'utm_tracker.middleware.UtmSessionMiddleware',
+    'utm_tracker.middleware.LeadSourceMiddleware',
 ]
 
 ROOT_URLCONF = 'cake_constructor.urls'
