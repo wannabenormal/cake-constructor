@@ -19,7 +19,7 @@ class CustomerAdmin(admin.ModelAdmin):
 
 @admin.register(Cake)
 class CakeAdmin(admin.ModelAdmin):
-    list_display = 'name', 'height', 'shape', 'topping', 'berry', 'decoration', 'price'
+    list_display = 'name', 'height', 'shape', 'topping', 'berry', 'decoration', 'price', 'inscription'
     list_editable = 'height', 'shape', 'topping', 'berry', 'decoration'
 
     def price(self, obj):
@@ -43,7 +43,8 @@ class AdvertisementAdmin(admin.ModelAdmin):
         return obj.quantity_paid
 
     def total_sold(self, obj):
-        obj.total_sold = sum([order.price for order in obj.orders.all()])
+        obj.total_sold = sum([order.price for order in obj.filter(Q(status='Готовится') |
+                                                                  Q(status='Доставлен'))])
         return obj.total_sold
 
     quantity_total.short_description = 'Общее количество заказов по акции'
