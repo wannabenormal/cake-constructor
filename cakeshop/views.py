@@ -158,7 +158,10 @@ def personal(request):
         return redirect('../accounts/login/')
     
     current_user = request.user
-    customer = get_object_or_404(Customer, name=current_user)
+    customer = Customer.objects.filter(name=current_user).first()
+    if not customer:
+        return redirect('../accounts/login/')
+    # customer = get_object_or_404(Customer, name=current_user)
 
     customer_details = {
         'name': customer.name,

@@ -47,7 +47,7 @@ def check_string(string, available_symbols, field, extra_symbols=[], ):
 class CustomUserCreationForm(forms.Form):
     username = forms.CharField(label='Enter Username', min_length=4, max_length=18)
     phone = forms.CharField(label='Enter Phone')
-    email = forms.CharField(label='Enter Elmail')
+    email = forms.CharField(label='Enter Email')
     name = forms.CharField(label='Enter name', max_length=25)
     address = forms.CharField(label='Enter address', max_length=100)
     password1 = forms.CharField(label='Enter password', widget=forms.PasswordInput)
