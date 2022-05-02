@@ -240,6 +240,6 @@ def session(request, order_id):
         ],
         mode='payment',
         success_url=my_domain + '/success/' + str(order_id),
-        cancel_url=my_domain + '/cancel' + str(order_id),
+        cancel_url=my_domain + '/cancel/' + str(order_id),
     )
     return redirect(checkout_session.url, code=303)
