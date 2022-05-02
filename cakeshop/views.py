@@ -6,6 +6,7 @@ from .serializers import OrderSerializer
 from django.conf import settings
 import stripe
 from django.shortcuts import get_object_or_404
+import datetime
 
 
 def main_page(request):
@@ -100,8 +101,14 @@ def register_order(request):
 def create_order_form(request):
     request.session['is_payment'] = True
     order_data = dict(request.POST.items())
+    date = order_data['date']
+    time = order_data['time']
+    date_time = str(date + " " + time + ':00.000000')  # FIXME too much hardcode :)
 
-    time = '2022-04-28 01:08:49.016151'
+    if (datetime.datetime.now() - datetime.datetime.fromisoformat(date_time)).days < 1:
+        is_urgent = True
+    else:
+        is_urgent = False
     customer, created = Customer.objects.get_or_create(
         phonenumber=order_data['phone'],
         defaults={'email': order_data['email'],
@@ -121,20 +128,19 @@ def create_order_form(request):
         decoration=Decoration.objects.get(decoration_codename=order_data.get('decor')),
         inscription=order_data.get('words'),
     )
-    # if promocode: price = price*(1(-promocode.value/100))
-    # if cake.promocode
-    # is_urgent = calculate
-    # if is_urgent: price * 1.2
     Cake.add_price(cake)
     price = cake.price
+    if is_urgent:
+        price = price * 1.2
 
     order = Order.objects.create(
         cake=cake,
         customer=customer,
         price=price,
-        delivery_datetime=time,
+        delivery_datetime=date_time,
         delivery_address=order_data['address'],
-        # add is_urgent
+        comment=order_data.get('comment'),
+        is_urgent=is_urgent
     )
 
     return redirect(reverse('cakeshop:create-checkout-session', kwargs={'order_id': order.id}))
