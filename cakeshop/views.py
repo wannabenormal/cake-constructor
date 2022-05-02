@@ -155,13 +155,15 @@ def create_order_form(request):
 def personal(request):
     
     if not request.user.is_authenticated:
+        print(1)
         return redirect('../accounts/login/')
     
     current_user = request.user
-    customer = Customer.objects.filter(name=current_user).first()
+    customer = current_user.customer.first()
     if not customer:
+        print(2)
         return redirect('../accounts/login/')
-    # customer = get_object_or_404(Customer, name=current_user)
+
 
     customer_details = {
         'name': customer.name,

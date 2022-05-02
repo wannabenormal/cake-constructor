@@ -55,7 +55,7 @@ class CustomUserCreationForm(forms.Form):
 
 
     def clean_username(self):
-        username = self.cleaned_data['username'].lower()
+        username = self.cleaned_data['username']
         r = User.objects.filter(username=username)
         if r.count():
             raise  ValidationError("Пользователь с таким именем уже существет")
@@ -76,7 +76,7 @@ class CustomUserCreationForm(forms.Form):
         return email
 
     def clean_name(self):
-        name = self.cleaned_data['name'].lower()
+        name = self.cleaned_data['name']
 
         is_valid, error_massage = check_string(name, ['ru', 'en'], 'Имя пользователя')
 
