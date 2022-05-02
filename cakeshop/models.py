@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Count, Sum, F
 from phonenumber_field.modelfields import PhoneNumberField
+
 
 class Height(models.Model):
     height = models.CharField(
@@ -150,12 +152,13 @@ class Advertisement(models.Model):
 
 
 class Customer(models.Model):
-    user = models.ForeignKey(User,
-                             verbose_name='Модель Юзера',
-                             blank=True,
-                             null=True,
-                             on_delete=models.CASCADE,
-                             related_name='customer')
+    user = models.ForeignKey(
+        User,
+        verbose_name='Модель Юзера',
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name='customer')
 
     name = models.CharField(
         'Имя',
@@ -251,6 +254,8 @@ class Cake(models.Model):
                 self.price += attribute.price
             except AttributeError:
                 pass
+        if self.inscription:
+            self.price += 500
         return self
 
     def __str__(self):
@@ -319,6 +324,7 @@ class Order(models.Model):
         verbose_name='Реклама',
         on_delete=models.CASCADE,
         max_length=255,
+        related_name='orders',
         blank=True,
         null=True
     )
