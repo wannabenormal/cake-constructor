@@ -8,9 +8,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const $decors = document.querySelectorAll('[name="decor"]');
   const $summary = $form.querySelector('#result');
   const $letteringInput = $form.querySelector('#words');
+  const $dateInput = document.querySelector('#date');
+  const dateMaskOptions = {
+    mask: '00.00.0000',
+  };
+  const dateMask = IMask($dateInput, dateMaskOptions);
+
+  const $timeInput = document.querySelector('#time');
+  const timeMaskOptions = {
+    mask: '00:00',
+  };
+  const timeMask = IMask($timeInput, timeMaskOptions);
+  const $fastDate = document.querySelector('#fast_date');
+  const fastDate = new Date($fastDate.value);
 
   const CAKE_DATA = {
-    level: {
+    lvls: {
       name: $levels[0].value,
       price: $levels[0].dataset.price,
     },
@@ -31,6 +44,10 @@ document.addEventListener('DOMContentLoaded', () => {
       price: $decors[0].dataset.price,
     },
     words: '',
+    date: {
+      date: '',
+      time: '',
+    },
   };
 
   const calcPrice = () => {
@@ -38,12 +55,19 @@ document.addEventListener('DOMContentLoaded', () => {
     Object.keys(CAKE_DATA).forEach((option) => {
       const optionValue = CAKE_DATA[option];
 
-      if (optionValue && option !== 'words') {
+      if (optionValue && option !== 'words' && option !== 'date') {
         summary += +optionValue.price;
       }
 
-      if (option === 'words') {
+      if (option === 'words' && optionValue.length > 0) {
         summary += 500;
+      }
+
+      if (option === 'date') {
+        const date = new Date(`${optionValue.date} ${optionValue.time}`);
+        if (date.getTime() < fastDate.getTime()) {
+          summary += summary * 0.2;
+        }
       }
     });
 
@@ -67,6 +91,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   $letteringInput.addEventListener('change', (e) => {
     CAKE_DATA['words'] = e.target.value.trim();
+    $summary.innerHTML = calcPrice();
+  });
+
+  $dateInput.addEventListener('change', (e) => {
+    CAKE_DATA['date'].date = moment(e.target.value, 'DD.MM.YYYY').format('YYYY-MM-DD');
+    $summary.innerHTML = calcPrice();
+  });
+
+  $timeInput.addEventListener('change', (e) => {
+    CAKE_DATA['date'].time = e.target.value;
     $summary.innerHTML = calcPrice();
   });
 });

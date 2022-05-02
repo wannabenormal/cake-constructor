@@ -1,3 +1,4 @@
+import datetime
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from rest_framework.decorators import api_view
@@ -38,6 +39,7 @@ def main_page(request):
             {"decoration_codename": decoration.decoration_codename,
              "decoration_name": decoration.decoration,
              "decoration_price": decoration.price} for decoration in decorations],
+        "fast_date": datetime.datetime.now() + datetime.timedelta(days=1)
     }
     return render(request, 'index.html', context)
 
