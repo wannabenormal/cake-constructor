@@ -216,7 +216,7 @@ def session(request, order_id):
         if advertisement:
             order.referral = advertisement
     order.save()
-    YOUR_DOMAIN = 'http://127.0.0.1:8000'
+    YOUR_DOMAIN = settings.ALLOWED_HOSTS[-1]
     price = order.price
     checkout_session = stripe.checkout.Session.create(
         payment_method_types=['card'],
