@@ -155,13 +155,11 @@ def create_order_form(request):
 def personal(request):
     
     if not request.user.is_authenticated:
-        print(1)
         return redirect('../accounts/login/')
     
     current_user = request.user
     customer = current_user.customer.first()
     if not customer:
-        print(2)
         return redirect('../accounts/login/')
 
 
