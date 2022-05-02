@@ -46,7 +46,7 @@ def main_page(request):
     return render(request, 'index.html', context)
 
 
-drf_test_string = {"status": "В обработке",
+drf_test_string = {"status": "Создан",
                    "price": 500,
                    "delivery_datetime": "2022-04-28 01:08:49.016151",
                    "delivery_address": "Москва",
@@ -192,14 +192,18 @@ def personal(request):
 def success_payment(request, order_id):
 
     order = get_object_or_404(Order, id=order_id)
+    if order.status != 'Ожидает оплаты':
+        return redirect(reverse('cakeshop:main_page'))
+
     order.status = 'Готовится'
-    order.save()
 
     return redirect(reverse('cakeshop:main_page'))
 
 
 def cancel_payment(request, order_id):
-
+    order = Order.objects.get(id=order_id)
+    order.status = 'Ожидает оплаты'
+    order.save()
     return render(request, 'cancel.html')
 
 
@@ -207,7 +211,10 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 def session(request, order_id):
+
     order = Order.objects.get(id=order_id)
+    order.status = 'Ожидает оплаты'
+    order.save()
     YOUR_DOMAIN = 'http://127.0.0.1:8000'
     price = order.price
     checkout_session = stripe.checkout.Session.create(
