@@ -43,8 +43,8 @@ class AdvertisementAdmin(admin.ModelAdmin):
         return obj.quantity_paid
 
     def total_sold(self, obj):
-        obj.total_sold = sum([order.price for order in obj.filter(Q(status='Готовится') |
-                                                                  Q(status='Доставлен'))])
+        obj.total_sold = sum([order.price for order in obj.orders.filter(Q(status='Готовится') |
+                                                                         Q(status='Доставлен'))])
         return obj.total_sold
 
     quantity_total.short_description = 'Общее количество заказов по акции'
