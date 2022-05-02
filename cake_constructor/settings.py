@@ -12,9 +12,9 @@ STRIPE_SECRET_KEY = env.str('STRIPE_SECRET_KEY')
 
 SECRET_KEY = 'django-insecure-+_&^71pgrwa%o6b$r5d15^7ypt&460-nzdr^0=yl!upxn=abdc'
 
-DEBUG = True
+DEBUG = env.bool('DEBUG')
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', ['*'])
 
 INSTALLED_APPS = [
     'debug_toolbar',
