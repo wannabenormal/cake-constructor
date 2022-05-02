@@ -10,7 +10,7 @@ env.read_env()
 STRIPE_PUBLIC_KEY = env.str('STRIPE_PUBLIC_KEY')
 STRIPE_SECRET_KEY = env.str('STRIPE_SECRET_KEY')
 
-SECRET_KEY = 'django-insecure-+_&^71pgrwa%o6b$r5d15^7ypt&460-nzdr^0=yl!upxn=abdc'
+SECRET_KEY = env.str('SECRET_KEY', 'verYSecrEtKey999')
 
 DEBUG = env.bool('DEBUG')
 
@@ -113,10 +113,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+#STATICFILES_DIRS = [
+#    os.path.join(BASE_DIR, "static"),
+#]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
