@@ -98,16 +98,9 @@ def register_order(request):
 
 
 def create_order_form(request):
-    print("i'm here")
-    print(request.session.items())
+    request.session['is_payment'] = True
     order_data = dict(request.POST.items())
-    # {'lvls': '3', 'form': '3',
-    # 'topping': '3', 'berries':
-    # '4', 'decor': '5', 'words': '123114',
-    # 'comment': '', 'name': 'Илья', 'phone':
-    # '89870608786', 'email': 'viktoryisnear@gmail.com',
-    # 'address': 'Дом', 'date': '22.22.22', 'time': '12:21',
-    # 'csrfmiddlewaretoken': 'raHnzakSbl1j9AOvYvkkPN4h8MEM6rZALp1VZp3hMGOq4u9rQqEXSoGfPmZQsdVZ'}
+
     time = '2022-04-28 01:08:49.016151'
     customer, created = Customer.objects.get_or_create(
         phonenumber=order_data['phone'],
@@ -190,8 +183,7 @@ def personal(request):
 def success_payment(request, order_id):
 
     order = get_object_or_404(Order, id=order_id)
-    print(order.status)
-    if order.status != 'Ожидает оплаты':
+    if not request.session.get('is_payment') or order.status != 'Ожидает оплаты':
         return redirect(reverse('cakeshop:main_page'))
 
     order.status = 'Готовится'
@@ -211,6 +203,9 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 def session(request, order_id):
+
+    if not request.session.get('is_payment'):
+        return redirect(reverse('cakeshop:main_page'))
 
     utm_referral = request.session.get('utm_referral')
 
@@ -239,6 +234,6 @@ def session(request, order_id):
         ],
         mode='payment',
         success_url=YOUR_DOMAIN + '/success/' + str(order_id),
-        cancel_url=YOUR_DOMAIN + '/cancel',
+        cancel_url=YOUR_DOMAIN + '/cancel' + str(order_id),
     )
     return redirect(checkout_session.url, code=303)
