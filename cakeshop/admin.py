@@ -34,8 +34,7 @@ class AdvertisementAdmin(admin.ModelAdmin):
     list_display = 'title', 'start_date', 'quantity_total', 'quantity_paid', 'total_sold',
 
     def quantity_total(self, obj):
-        obj.quantity_total = len([order for order in obj.orders.filter(Q(status='В обработке') |
-                                                                       Q(status='Ожидает оплаты'))])
+        obj.quantity_total = len([order for order in obj.orders.all()])
         return obj.quantity_total
 
     def quantity_paid(self, obj):
