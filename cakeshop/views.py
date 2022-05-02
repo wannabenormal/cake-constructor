@@ -103,9 +103,13 @@ def register_order(request):
 def create_order_form(request):
     request.session['is_payment'] = True
     order_data = dict(request.POST.items())
-    date = order_data['date']
+    date = "-".join(order_data['date'].replace('.', '-').split('-')[::-1])
     time = order_data['time']
-    date_time = str(date + " " + time + ':00.000000')  # FIXME too much hardcode :)
+    try:
+        date_time = str(date + " " + time + ':00.000000')  # FIXME too much hardcode :)
+    except Exception as e:
+        print(e)
+        date_time = '2022-05-03 00:00:00.016151'
 
     if (datetime.datetime.now() - datetime.datetime.fromisoformat(date_time)).days < 1:
         is_urgent = True
