@@ -111,7 +111,7 @@ def create_order_form(request):
         print(e)
         date_time = '2022-05-03 00:00:00.016151'
 
-    if (datetime.datetime.now() - datetime.datetime.fromisoformat(date_time)).days < 1:
+    if (datetime.datetime.fromisoformat(date_time) - datetime.datetime.now()).days < 1:
         is_urgent = True
     else:
         is_urgent = False
