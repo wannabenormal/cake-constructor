@@ -153,6 +153,10 @@ def create_order_form(request):
 
 
 def personal(request):
+    
+    if not request.user.is_authenticated:
+        return redirect('../accounts/login/')
+    
     current_user = request.user
     customer = get_object_or_404(Customer, name=current_user)
 
