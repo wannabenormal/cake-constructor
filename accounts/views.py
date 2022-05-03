@@ -1,7 +1,4 @@
 from django.shortcuts import render
-from django.contrib.auth.forms import UserCreationForm
-from django.urls import reverse_lazy
-from django.views import generic
 from .forms import CustomUserCreationForm
 from django.shortcuts import redirect
 from django.contrib import messages
@@ -18,6 +15,5 @@ def register(request):
 
     else:
         f = CustomUserCreationForm()
-
 
     return render(request, os.path.join('registration', 'sign_up.html'), {'form': f})

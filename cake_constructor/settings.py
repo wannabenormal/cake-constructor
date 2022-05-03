@@ -1,4 +1,3 @@
-from pathlib import Path
 import os
 from environs import Env
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -9,6 +8,7 @@ env = Env()
 env.read_env()
 STRIPE_PUBLIC_KEY = env.str('STRIPE_PUBLIC_KEY')
 STRIPE_SECRET_KEY = env.str('STRIPE_SECRET_KEY')
+SERVER_IP_OR_DOMAIN = env.str('SERVER_IP_OR_DOMAIN', 'http://127.0.0.1:8000')
 
 SECRET_KEY = env.str('SECRET_KEY', 'verYSecrEtKey999')
 
@@ -120,7 +120,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-
 INTERNAL_IPS = [
     '127.0.0.1',
 ]

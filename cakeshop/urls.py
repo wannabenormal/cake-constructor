@@ -1,4 +1,4 @@
-from django.urls import include, path
+from django.urls import path
 from .views import (main_page,
                     register_order,
                     personal,
@@ -6,7 +6,6 @@ from .views import (main_page,
                     success_payment,
                     cancel_payment,
                     create_order_form)
-from django.views.generic.base import RedirectView
 
 app_name = "cakeshop"
 

@@ -1,4 +1,3 @@
-import datetime
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from rest_framework.decorators import api_view
@@ -43,27 +42,6 @@ def main_page(request):
         "fast_date": datetime.datetime.now() + datetime.timedelta(days=1)
     }
     return render(request, 'index.html', context)
-
-
-drf_test_string = {"status": "Создан",
-                   "price": 500,
-                   "delivery_datetime": "2022-04-28 01:08:49.016151",
-                   "delivery_address": "Москва",
-                   "customer": {
-                       "name": "first",
-                       "email": "validated@mail.ru",
-                       "phonenumber": "89878888881",
-                       "address": "Москва"
-                   },
-                   "cake": {"name": "Cake",
-                            "description": "simple cake",
-                            "height": "one",
-                            "shape": "s",
-                            "topping": "1",
-                            "berry": "1",
-                            "decoration": "1",
-                            "inscription": ""}
-                   }
 
 
 @api_view(['POST'])
@@ -162,7 +140,6 @@ def personal(request):
     if not customer:
         return redirect('../accounts/login/')
 
-
     customer_details = {
         'name': customer.name,
         'email': customer.email,
@@ -235,7 +212,7 @@ def session(request, order_id):
         if advertisement:
             order.referral = advertisement
     order.save()
-    my_domain = 'http://' + settings.ALLOWED_HOSTS[-1]
+    my_domain = settings.SERVER_IP_OR_DOMAIN
     price = order.price
     checkout_session = stripe.checkout.Session.create(
         payment_method_types=['card'],

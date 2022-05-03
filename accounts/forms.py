@@ -1,13 +1,11 @@
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
-from django.core.exceptions import ValidationError
 from cakeshop.models import Customer
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from phonenumber_field.modelfields import PhoneNumberField
 from phonenumbers import parse, is_valid_number
 from phonenumbers.phonenumberutil import NumberParseException
+
 
 def check_string(string, available_symbols, field, extra_symbols=[], ):
     # available_symbols is list, that can contain
@@ -53,12 +51,11 @@ class CustomUserCreationForm(forms.Form):
     password1 = forms.CharField(label='Enter password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Confirm password', widget=forms.PasswordInput)
 
-
     def clean_username(self):
         username = self.cleaned_data['username']
         r = User.objects.filter(username=username)
         if r.count():
-            raise  ValidationError("Пользователь с таким именем уже существет")
+            raise ValidationError("Пользователь с таким именем уже существет")
 
         if username.isdigit():
             raise ValidationError("Имя пользователя не должно содержать только цифры")
@@ -125,9 +122,6 @@ class CustomUserCreationForm(forms.Form):
             customer.name = self.cleaned_data['name']
             customer.address = self.cleaned_data['address']
             customer.save()
-
-
-
 
         user = User.objects.create_user(
             username=self.cleaned_data['username'],

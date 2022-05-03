@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer, RelatedField, ReadOnlyField, PrimaryKeyRelatedField
+from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField
 from cakeshop.models import Order, Customer, Cake, Shape, Topping, Decoration, Height, Berry
 
 
