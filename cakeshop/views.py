@@ -1,6 +1,7 @@
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from .models import Order, Cake, Customer, Height, Shape, Topping, Berry, Decoration, Advertisement
 from .serializers import OrderSerializer
 from django.conf import settings
@@ -47,7 +48,7 @@ def main_page(request):
 @api_view(['POST'])
 def register_order(request):
     order_serializer = OrderSerializer(data=request.data)
-    order_serializer.is_valid(raise_exception=False)
+    order_serializer.is_valid(raise_exception=True)
     customer, created = Customer.objects.get_or_create(
         phonenumber=order_serializer.validated_data['customer']['phonenumber'],
         defaults={'email': order_serializer.validated_data['customer']['email'],
@@ -67,15 +68,25 @@ def register_order(request):
         decoration=order_serializer.validated_data['cake'].get('decoration'),
         inscription=order_serializer.validated_data['cake'].get('inscription'),
     )
-    order = Order.objects.create(
+    if (order_serializer.validated_data['delivery_datetime'] - datetime.datetime.now(datetime.timezone.utc)).days < 1:
+        is_urgent = True
+    else:
+        is_urgent = False
+    Cake.add_price(cake)
+    price = cake.price
+    if is_urgent:
+        price = price * 1.2
+
+    Order.objects.create(
         cake=cake,
         customer=customer,
-        price=order_serializer.validated_data['price'],
+        price=price,
         delivery_datetime=order_serializer.validated_data['delivery_datetime'],
         delivery_address=order_serializer.validated_data['delivery_address'],
+        comment=order_serializer.validated_data.get('comments')
     )
 
-    return redirect(reverse('cakeshop:create-checkout-session', kwargs={'order_id': order.id}))
+    return Response(order_serializer.data, status=201)
 
 
 def create_order_form(request):
@@ -131,10 +142,9 @@ def create_order_form(request):
 
 
 def personal(request):
-    
     if not request.user.is_authenticated:
         return redirect('../accounts/login/')
-    
+
     current_user = request.user
     customer = current_user.customer.first()
     if not customer:
@@ -177,7 +187,6 @@ def personal(request):
 
 
 def success_payment(request, order_id):
-
     order = get_object_or_404(Order, id=order_id)
     if not request.session.get('is_payment') or order.status != 'Ожидает оплаты':
         return redirect(reverse('cakeshop:main_page'))
@@ -199,7 +208,6 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 def session(request, order_id):
-
     if not request.session.get('is_payment'):
         return redirect(reverse('cakeshop:main_page'))
 

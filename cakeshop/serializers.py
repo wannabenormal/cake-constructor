@@ -41,7 +41,6 @@ class OrderSerializer(ModelSerializer):
     class Meta:
         model = Order
         fields = ['status',
-                  'price',
                   'creation_time',
                   'delivery_datetime',
                   'delivery_address',
